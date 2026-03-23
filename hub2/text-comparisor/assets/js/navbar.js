@@ -8,7 +8,9 @@ $(function () {
   const STORAGE_KEY = 'toolkit-theme';
 
   function applyTheme(theme) {
-    $('html').attr('data-theme', theme);
+    $('html')
+      .attr('data-theme', theme)       // our design system
+      .attr('data-bs-theme', theme);   // Bootstrap 5.3 dark mode
     localStorage.setItem(STORAGE_KEY, theme);
   }
 

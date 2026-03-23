@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="assets/css/main.css" />
   <!-- Prevent theme flash before CSS loads -->
   <script>
-    (function(){var t=localStorage.getItem('toolkit-theme');if(t)document.documentElement.setAttribute('data-theme',t);}());
+    (function(){var t=localStorage.getItem('toolkit-theme');if(t){document.documentElement.setAttribute('data-theme',t);document.documentElement.setAttribute('data-bs-theme',t);}}());
   </script>
 </head>
 <body>
