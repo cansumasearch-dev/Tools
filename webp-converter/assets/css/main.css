@@ -1,15 +1,141 @@
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=Outfit:wght@300;400;500&display=swap");
+
+/* ── Design system variables ── */
+:root {
+  --font-display: Syne, sans-serif;
+  --font-body: Outfit, sans-serif;
+  --font-mono: "DM Mono", monospace;
+  --nav-h: 56px;
+  --radius: 10px;
+  --radius-sm: 6px;
+  --shadow: 0 2px 12px rgba(0,0,0,.07);
+  --shadow-md: 0 6px 28px rgba(0,0,0,.1);
+  --transition: 0.18s ease;
+  --bg: #fafaf8;
+  --bg-surface: #f2f2ef;
+  --bg-elevated: #ffffff;
+  --border: #e4e4e0;
+  --border-subtle: #edede9;
+  --text: #1c1c1a;
+  --text-2: #5e5e5a;
+  --text-3: #9e9e98;
+  --accent: #1c1c1a;
+  --accent-fg: #ffffff;
+  --accent-hover: #343430;
+  --ok: #22c55e;
+  --miss: #ef4444;
+  --extra: #3b82f6;
+}
+[data-theme="dark"] {
+  --bg: #111110;
+  --bg-surface: #1b1b19;
+  --bg-elevated: #222220;
+  --border: #2e2e2a;
+  --border-subtle: #242421;
+  --text: #eeeee8;
+  --text-2: #8c8c86;
+  --text-3: #4e4e48;
+  --accent: #eeeee8;
+  --accent-fg: #111110;
+  --accent-hover: #d0d0c8;
+}
+
+/* ── Navbar ── */
 .navbar {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  z-index: 200;
+  top: 0; left: 0; right: 0;
+  z-index: 1100000;
   height: var(--nav-h);
   display: flex;
   align-items: center;
   gap: 0;
-  pad
-@charset "UTF-8";
+  padding: 0 28px;
+  background: rgba(250,250,248,0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border-subtle);
+  font-family: var(--font-body);
+}
+[data-theme="dark"] .navbar { background: rgba(17,17,16,0.92); }
+.navbar__brand {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--font-mono); font-size: 13px; font-weight: 500;
+  color: var(--text); text-decoration: none; opacity: 1;
+  transition: opacity .18s;
+}
+.navbar__brand:hover { opacity: .7; }
+.navbar__brand-dot {
+  width: 7px; height: 7px; background: var(--text);
+  border-radius: 50%; flex-shrink: 0;
+}
+.navbar__sep { width: 1px; height: 16px; background: var(--border); margin: 0 20px; flex-shrink: 0; }
+.navbar__links { display: flex; align-items: center; gap: 2px; flex: 1; }
+.navbar__link {
+  font-size: 13.5px; color: var(--text-2); padding: 5px 12px;
+  border-radius: 6px; text-decoration: none;
+  transition: color .18s, background .18s;
+}
+.navbar__link:hover { color: var(--text); background: var(--bg-surface); }
+.navbar__link.is-active { color: var(--text); font-weight: 500; background: var(--bg-surface); }
+.navbar__right { display: flex; align-items: center; gap: 8px; margin-left: auto; }
+.navbar__theme {
+  display: flex; align-items: center; justify-content: center;
+  width: 34px; height: 34px; border-radius: 6px; color: var(--text-2);
+  background: none; border: none; cursor: pointer;
+  transition: color .18s, background .18s;
+}
+.navbar__theme:hover { color: var(--text); background: var(--bg-surface); }
+.navbar__theme svg { width: 17px; height: 17px; }
+.navbar__theme .icon-moon { display: none; }
+.navbar__theme .icon-sun  { display: block; }
+[data-theme="dark"] .navbar__theme .icon-sun  { display: none; }
+[data-theme="dark"] .navbar__theme .icon-moon { display: block; }
+.navbar__burger {
+  display: none; flex-direction: column; justify-content: center;
+  align-items: center; width: 34px; height: 34px; gap: 5px;
+  border-radius: 6px; color: var(--text-2); background: none;
+  border: none; cursor: pointer; transition: background .18s;
+}
+.navbar__burger:hover { background: var(--bg-surface); }
+.navbar__burger span {
+  display: block; width: 18px; height: 1.5px;
+  background: currentColor; border-radius: 99px;
+  transition: transform .25s ease, opacity .2s;
+}
+.navbar__burger.is-open span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.navbar__burger.is-open span:nth-child(2) { opacity: 0; }
+.navbar__burger.is-open span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+@media (max-width: 680px) {
+  .navbar { padding: 0 20px; }
+  .navbar__sep { display: none; }
+  .navbar__burger { display: flex; }
+  .navbar__links {
+    display: none; position: fixed; top: var(--nav-h);
+    left: 0; right: 0; background: var(--bg-elevated);
+    border-bottom: 1px solid var(--border); flex-direction: column;
+    align-items: stretch; gap: 0; padding: 8px 12px 12px;
+    box-shadow: var(--shadow-md);
+  }
+  .navbar__links.is-open { display: flex; }
+  .navbar__link { padding: 10px 14px; font-size: 14px; }
+}
+
+/* ── Positioning overrides ── */
+body { padding-top: var(--nav-h) !important; }
+.sidebar {
+  top: var(--nav-h) !important;
+  height: calc(100vh - var(--nav-h)) !important;
+}
+.sidebar-overlay {
+  top: var(--nav-h) !important;
+  height: calc(100vh - var(--nav-h)) !important;
+}
+.sidebar-toggle { top: calc(var(--nav-h) + 1rem) !important; }
+.notification-center { top: calc(var(--nav-h) + 100px) !important; }
+.update-banner { top: var(--nav-h) !important; z-index: 1099999 !important; }
+#reopenNotification { top: calc(var(--nav-h) + 100px) !important; }
+
+
 :root {
   --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   --secondary-gradient: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
@@ -5589,57 +5715,4 @@ pre code {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-/* ═══════════════════════════════════════════════════════════
-   NAVBAR INTEGRATION OVERRIDES
-   Offsets all fixed elements below the shared navbar
-   ═══════════════════════════════════════════════════════════ */
-
-/* Navbar sits on top of everything including update-banner */
-.navbar {
-  z-index: 1100000 !important;
-}
-
-/* Body push — space for navbar */
-body {
-  padding-top: var(--nav-h) !important;
-}
-
-/* Sidebar — start below navbar, full remaining height */
-.sidebar {
-  top: var(--nav-h) !important;
-  height: calc(100vh - var(--nav-h)) !important;
-}
-
-/* Sidebar overlay */
-.sidebar-overlay {
-  top: var(--nav-h) !important;
-  height: calc(100vh - var(--nav-h)) !important;
-}
-
-/* Sidebar toggle button */
-.sidebar-toggle {
-  top: calc(var(--nav-h) + 1rem) !important;
-}
-
-/* Notification center */
-.notification-center {
-  top: calc(var(--nav-h) + 10px) !important;
-}
-
-/* Update banner — slide in below navbar */
-.update-banner {
-  top: var(--nav-h) !important;
-  z-index: 1099999 !important;
-}
-
-/* Main content — no extra padding needed since body already has padding-top */
-.main-content {
-  padding-top: 0 !important;
-  min-height: calc(100vh - var(--nav-h)) !important;
-}
-
-/* Reopen notification button */
-#reopenNotification {
-  top: calc(var(--nav-h) + 10px) !important;
 }
