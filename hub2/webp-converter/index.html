@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>WebP Converter Pro — toolkit.artline-studio.de</title>
+  <link rel="icon" type="image/x-icon" href="assets/images/fav-icon.png" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css" rel="stylesheet" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <script>
+    (function(){var t=localStorage.getItem('toolkit-theme');if(t)document.documentElement.setAttribute('data-theme',t);}());
+  </script>
+</head>
+<body>
+
+  <!-- ── Navbar ──────────────────────────────────────────────────────────────── -->
+  <nav class="navbar">
+    <a class="navbar__brand" href="../index.html">
+      <span class="navbar__brand-dot"></span>
+      toolkit.artline-studio.de
+    </a>
+
+    <span class="navbar__sep"></span>
+
+    <div class="navbar__links" id="nav-links">
+      <a class="navbar__link" href="../index.html">Home</a>
+      <a class="navbar__link" href="../text-comparisor/index.html">TextMatch</a>
+      <a class="navbar__link" href="../bootstrap-builder/index.html">BS Builder</a>
+      <a class="navbar__link is-active" href="index.html">WebP Converter</a>
+    </div>
+
+    <div class="navbar__right">
+      <button class="navbar__theme" data-action="toggle-theme" title="Toggle theme" aria-label="Toggle dark/light mode">
+        <svg class="icon-sun" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+          <circle cx="10" cy="10" r="3.5"/>
+          <line x1="10" y1="1.5" x2="10" y2="3.2"/><line x1="10" y1="16.8" x2="10" y2="18.5"/>
+          <line x1="1.5" y1="10" x2="3.2" y2="10"/><line x1="16.8" y1="10" x2="18.5" y2="10"/>
+          <line x1="4.1" y1="4.1" x2="5.4" y2="5.4"/><line x1="14.6" y1="14.6" x2="15.9" y2="15.9"/>
+          <line x1="15.9" y1="4.1" x2="14.6" y2="5.4"/><line x1="5.4" y1="14.6" x2="4.1" y2="15.9"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 13.5A7 7 0 016.5 3a7 7 0 1010.5 10.5z"/>
+        </svg>
+      </button>
+      <button class="navbar__burger" data-action="toggle-menu" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+
+  <div class="app-shell">
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Notification Center -->
+    <div id="notificationsCenter" class="notification-center">
+        <button class="notification-close" id="closeNotification" title="Close">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="notification-icon">
+            <i class="fas fa-bell"></i>
+        </div>
+        <div class="notification-content">
+            <h4>Latest Update! 🚀</h4>
+            <p>
+                <strong>PageSpeed Insights Major Update!</strong><br>
+                Complete visual overhaul with new interactive features and auto-update system.
+                <br><br>
+                <b>What's New:</b><br>
+                • Clean white/gray UI for PageSpeed (no more gradient background)<br>
+                • Better readability with proper text colors<br>
+                • White score cards with colored ring indicators<br>
+                • <b>NEW:</b> Collapsible accordion categories - click to expand/collapse<br>
+                • <b>NEW:</b> Accordion states persist when switching mobile/desktop<br>
+                • <b>NEW:</b> Click score cards to jump to detailed issues<br>
+                • <b>NEW:</b> Auto-update notification - get notified within 30 seconds of new deployments<br>
+                • SCSS refactored into 23 modular files<br>
+                • Changed Pagespeed API to get better results<br>
+                • <b>NEW:</b> WebP input support — upload WebP files and convert to JPG, PNG or WebP!<br>
+                <br>
+                Check out the Changelog section to see all changes! ʕ•ᴥ•ʔ
+            </p>
+        </div>
+    </div>
+
+    <!-- Reopen Button (shows when notification is closed) -->
+    <button id="reopenNotification" class="notification-reopen" title="Show Notifications">
+        <i class="fas fa-bell"></i>
+        <span class="notification-badge">!!</span>
+    </button>
+
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h3><i class="fas fa-magic me-2"></i>WebP Converter</h3>
+            <button class="sidebar-close" id="sidebarClose">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav">
+            <a href="#" class="nav-item active" data-section="converter">
+                <i class="fas fa-magic"></i>
+                <span>Converter</span>
+            </a>
+            <a href="#" class="nav-item" data-section="history">
+                <i class="fas fa-history"></i>
+                <span>History</span>
+            </a>
+            <a href="#" class="nav-item" data-section="stats">
+                <i class="fas fa-chart-bar"></i>
+                <span>Statistics</span>
+            </a>
+            <a href="#" class="nav-item" data-section="presets">
+                <i class="fas fa-save"></i>
+                <span>Saved Presets</span>
+            </a>
+            <a href="#" class="nav-item" data-section="pagespeed">
+                <i class="fas fa-save"></i>
+                <span>Pagespeed Insights</span>
+            </a>
+            <a href="#" class="nav-item" data-section="changelog">
+                <i class="fas fa-code-branch"></i>
+                <span>Changelog</span>
+            </a>
+        </nav>
+
+        <div class="sidebar-stats">
+            <div class="sidebar-stat-item">
+                <i class="fas fa-images"></i>
+                <div class="stat-info">
+                    <div class="stat-label">Total Conversions</div>
+                    <div class="stat-value" id="sidebarTotalConversions">0</div>
+                </div>
+            </div>
+            <div class="sidebar-stat-item">
+                <i class="fas fa-save"></i>
+                <div class="stat-info">
+                    <div class="stat-label">Space Saved</div>
+                    <div class="stat-value" id="sidebarSpaceSaved">0 MB</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="sidebar-footer">
+            <small>WebP Converter Pro v2.0</small>
+        </div>
+    </div>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="main-content" id="mainContent">
+        <div class="main-content-wrapper">
+            <div class="content-section active" id="converterSection">
+                <div class="main-container">
+                    <header class="hero-header">
+                        <div class="hero-content">
+                            <h1><i class="fas fa-magic me-3"></i>Image Converter Pro</h1>
+                            <p class="subtitle">Convert between JPG, PNG, WebP and more — resize, optimize, and save!</p>
+                            <!-- Updated format badges to reflect all supported conversions -->
+                            <div class="supported-formats">
+                                <span class="format-badge">JPG → WebP</span>
+                                <span class="format-badge">PNG → WebP</span>
+                                <span class="format-badge">WebP → JPG</span>
+                                <span class="format-badge">WebP → PNG</span>
+                                <span class="format-badge">SVG → WebP</span>
+                                <span class="format-badge">+ Resize</span>
+                            </div>
+                        </div>
+                    </header>
+
+                    <div class="content-section-inner">
+                        <div class="upload-zone" id="uploadZone">
+                            <i class="fas fa-cloud-upload-alt upload-icon"></i>
+                            <h3>Drop your images here</h3>
+                            <p>Or click to select JPG, JPEG, PNG, SVG, WebP files</p>
+                            <!-- Added image/webp to accept -->
+                            <input type="file" id="fileInput" multiple accept=".jpg,.jpeg,.png,.svg,.webp,image/webp" class="d-none">
+                        </div>
+
+                        <div class="url-upload-section mt-4 d-none" id="urlUploadSection">
+                            <div class="url-upload-header">
+                                <i class="fas fa-link me-2"></i>Upload from URL
+                            </div>
+                            <div class="url-input-group">
+                                <input type="text" id="urlInput" class="url-input" placeholder="Paste image URL here">
+                                <button class="url-add-btn" id="urlAddBtn">
+                                    <i class="fas fa-plus me-1"></i>Add URL
+                                </button>
+                            </div>
+                            <div class="url-list" id="urlList"></div>
+                        </div>
+
+                        <div class="text-center mt-3">
+                            <button class="btn-custom btn-styled" id="toggleUrlUpload">
+                                <i class="fas fa-link me-2"></i>Upload from URL
+                            </button>
+                        </div>
+
+                        <div class="quality-control d-none" id="qualityControl">
+                            <div class="resize-option">
+                                <div class="conversion-mode-label">
+                                    <i class="fas fa-cog me-2"></i>Conversion Mode
+                                </div>
+                                <div class="segmented-control">
+                                    <input type="radio" name="conversionMode" id="modeWebpOnly" value="webp" checked>
+                                    <label for="modeWebpOnly">
+                                        <span class="option-title">Convert Only</span>
+                                        <span class="option-subtitle">Change format</span>
+                                    </label>
+                                    
+                                    <input type="radio" name="conversionMode" id="modeResizeOnly" value="resize">
+                                    <label for="modeResizeOnly">
+                                        <span class="option-title">Resize Only</span>
+                                        <span class="option-subtitle">Keep original format</span>
+                                    </label>
+                                    
+                                    <input type="radio" name="conversionMode" id="modeBoth" value="both">
+                                    <label for="modeBoth">
+                                        <span class="recommended-badge">BEST</span>
+                                        <span class="option-title">Both</span>
+                                        <span class="option-subtitle">Maximum savings!</span>
+                                    </label>
+                                </div>
+                                <div class="conversion-info">
+                                    <i class="fas fa-info-circle me-1"></i>
+                                    <span id="conversionModeInfo">Images will be converted to your chosen format</span>
+                                </div>
+                            </div>
+
+                            <!-- Output Format Selector — shown when converting, hidden for resize-only -->
+                            <div class="output-format-section d-none" id="outputFormatSection">
+                                <div class="quality-header">
+                                    <h4><i class="fas fa-file-image me-2"></i>Output Format</h4>
+                                </div>
+                                <select id="outputFormatSelect" class="form-select output-format-select">
+                                    <option value="image/webp" selected>WebP — smallest file size</option>
+                                    <option value="image/jpeg">JPEG — maximum compatibility</option>
+                                    <option value="image/png">PNG — lossless / transparency</option>
+                                </select>
+                                <div class="text-center mt-2">
+                                    <small class="text-muted">Choose the format your images will be saved as</small>
+                                </div>
+                            </div>
+
+                            <div class="quality-section" id="qualitySection">
+                                <div class="quality-header">
+                                    <h4><i class="fas fa-sliders-h me-2"></i>Quality</h4>
+                                    <div class="quality-value" id="qualityValue">80%</div>
+                                </div>
+                                <input type="range" id="qualitySlider" class="quality-slider" min="10" max="100" value="80">
+                                <div class="text-center mt-3">
+                                    <small class="text-muted">Higher quality = larger file size. PNG ignores this setting.</small>
+                                </div>
+                            </div>
+
+                            <div class="resize-section d-none" id="resizeSection">
+                                <div class="resize-header">
+                                    <h4><i class="fas fa-expand-arrows-alt me-2"></i>Resize Dimensions</h4>
+                                </div>
+                                
+                                <div class="aspect-ratio-toggle">
+                                    <button class="aspect-btn active" id="aspectRatioBtn">
+                                        <i class="fas fa-link me-2"></i>
+                                        <span>Maintain Aspect Ratio</span>
+                                    </button>
+                                </div>
+
+                                <div class="dimension-inputs">
+                                    <div class="dimension-group">
+                                        <label>Width (px)</label>
+                                        <input type="number" id="widthInput" class="dimension-input" value="1920" min="1">
+                                    </div>
+                                    <div class="dimension-group">
+                                        <label>Height (px)</label>
+                                        <input type="number" id="heightInput" class="dimension-input" value="1080" min="1">
+                                    </div>
+                                </div>
+                                <div class="text-center mt-2">
+                                    <small class="text-muted" id="dimensionHint">Height will auto-adjust to maintain aspect ratio</small>
+                                </div>
+                            </div>
+
+                            <div class="batch-rename-section mt-4">
+                                <div class="rename-header">
+                                    <i class="fas fa-pen me-2"></i>Batch Rename (Optional)
+                                </div>
+                                <div class="rename-input-group">
+                                    <input type="text" id="renamePrefix" class="rename-input" placeholder="e.g., my_photo">
+                                    <div class="rename-preview" id="renamePreview">
+                                        <small class="text-muted">Leave empty to keep original names</small>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="exif-option mt-4">
+                                <div class="form-check form-switch d-flex justify-content-center align-items-center">
+                                    <input class="form-check-input me-3" type="checkbox" id="preserveExif" style="transform: scale(1.2);">
+                                    <label class="form-check-label" for="preserveExif" style="font-weight: 500; color: #333;">
+                                        <i class="fas fa-camera me-2"></i>Preserve EXIF metadata
+                                    </label>
+                                </div>
+                                <div class="text-center mt-2">
+                                    <small class="text-muted">Uncheck for smaller files and better privacy</small>
+                                </div>
+                            </div>
+
+                            <div class="preset-actions mt-4">
+                                <button class="btn-custom btn-styled" id="savePresetBtn">
+                                    <i class="fas fa-save me-2"></i>Save Current Settings as Preset
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="action-buttons d-none" id="actionButtons">
+                            <button class="btn-custom" id="convertBtn">
+                                <i class="fas fa-magic me-2"></i>Start Conversion
+                            </button>
+                            <button class="btn-custom btn-secondary" id="clearBtn">
+                                <i class="fas fa-trash me-2"></i>Clear All
+                            </button>
+                            <button class="btn-custom btn-success d-none" id="downloadAllBtn">
+                                <i class="fas fa-download me-2"></i>Download All as ZIP
+                            </button>
+                        </div>
+
+                        <div class="bulk-actions d-none" id="bulkActions">
+                            <div class="bulk-actions-header">
+                                <i class="fas fa-tasks me-2"></i>Bulk Actions
+                            </div>
+                            <div class="bulk-buttons">
+                                <button class="bulk-btn" id="sortBySizeBtn">
+                                    <i class="fas fa-sort-amount-down me-1"></i>Sort by Size
+                                </button>
+                                <button class="bulk-btn" id="sortBySavingsBtn">
+                                    <i class="fas fa-percent me-1"></i>Sort by Savings
+                                </button>
+                                <button class="bulk-btn danger" id="removeFailedBtn">
+                                    <i class="fas fa-times-circle me-1"></i>Remove Failed
+                                </button>
+                                <button class="bulk-btn" id="reconvertFailedBtn">
+                                    <i class="fas fa-redo me-1"></i>Reconvert Failed
+                                </button>
+                                <button class="bulk-btn" id="duplicateDetectorBtn">
+                                    <i class="fas fa-copy me-1"></i>Find Duplicates
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="progress-section d-none" id="progressSection">
+                            <div class="overall-progress">
+                                <div class="progress-text" id="progressText">Ready to convert</div>
+                                <div class="current-file-info" id="currentFileInfo"></div>
+                                <div class="progress-bar-container">
+                                    <div class="progress-bar-fill" id="progressBarFill" style="width: 0%;"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="stats-grid d-none" id="statsGrid">
+                            <div class="stat-card">
+                                <div class="stat-icon text-primary">
+                                    <i class="fas fa-images"></i>
+                                </div>
+                                <div class="stat-number text-primary" id="totalFiles">0</div>
+                                <div class="stat-label">Total Files</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon text-success">
+                                    <i class="fas fa-check-circle"></i>
+                                </div>
+                                <div class="stat-number text-success" id="completedFiles">0</div>
+                                <div class="stat-label">Completed</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon text-warning">
+                                    <i class="fas fa-clock"></i>
+                                </div>
+                                <div class="stat-number text-warning" id="remainingFiles">0</div>
+                                <div class="stat-label">Remaining</div>
+                            </div>
+                            <div class="stat-card">
+                                <div class="stat-icon text-info">
+                                    <i class="fas fa-compress-alt"></i>
+                                </div>
+                                <div class="stat-number text-info" id="totalSavings">0%</div>
+                                <div class="stat-label">Space Saved</div>
+                            </div>
+                        </div>
+
+                        <div class="file-list" id="fileList"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section" id="historySection">
+                <div class="section-header-centered">
+                    <h2><i class="fas fa-history me-3"></i>Conversion History</h2>
+                    <button class="btn-custom btn-styled btn-danger" id="clearHistoryBtn">
+                        <i class="fas fa-trash me-2"></i>Clear History
+                    </button>
+                </div>
+                <div class="history-list" id="historyList">
+                    <p class="text-center text-muted-white">No conversion history yet. Start converting images!</p>
+                </div>
+            </div>
+
+            <div class="content-section" id="statsSection">
+                <div class="section-header-centered">
+                    <h2><i class="fas fa-chart-bar me-3"></i>Statistics</h2>
+                </div>
+                <div class="stats-dashboard">
+                    <div class="dashboard-card">
+                        <h4>Total Conversions</h4>
+                        <div class="dashboard-number" id="statTotalConversions">0</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h4>Total Space Saved</h4>
+                        <div class="dashboard-number" id="statTotalSaved">0 MB</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h4>Average Savings</h4>
+                        <div class="dashboard-number" id="statAvgSavings">0%</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <h4>Total Files Processed</h4>
+                        <div class="dashboard-number" id="statTotalFiles">0</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content-section" id="presetsSection">
+                <div class="section-header-centered">
+                    <h2><i class="fas fa-save me-3"></i>Saved Presets</h2>
+                </div>
+                <div class="presets-grid" id="presetsGrid">
+                    <p class="text-center text-muted-white">No saved presets yet. Save your current settings from the converter page!</p>
+                </div>
+            </div>
+
+            <!-- PageSpeed Insights Section -->
+            <div class="content-section" id="pagespeedSection">
+                <div class="section-header-centered">
+                    <h2><i class="fas fa-tachometer-alt me-3"></i>PageSpeed Insights</h2>
+                    <p>Analyze your website's performance and get optimization suggestions</p>
+                </div>
+                
+                <div class="pagespeed-container">
+                    <div class="pagespeed-input-section">
+                        <div class="pagespeed-input-group">
+                            <input type="url" id="pagespeedUrl" class="pagespeed-input" placeholder="Enter website URL (e.g., https://example.com)">
+                            <button class="btn-custom btn-styled" id="analyzePageSpeedBtn">
+                                <i class="fas fa-search me-2"></i>Analyze
+                            </button>
+                        </div>
+                        
+                        <div class="device-toggle">
+                            <button class="device-btn active" data-strategy="mobile">
+                                <i class="fas fa-mobile-alt me-2"></i>Mobile
+                            </button>
+                            <button class="device-btn" data-strategy="desktop">
+                                <i class="fas fa-desktop me-2"></i>Desktop
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="pagespeed-loading d-none" id="pagespeedLoading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Analyzing website performance...</p>
+                        <small>This may take 10-30 seconds</small>
+                    </div>
+                    
+                    <div class="pagespeed-results d-none" id="pagespeedResults">
+                        <!-- Results will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Changelog Section -->
+            <div class="content-section" id="changelogSection">
+                <div class="section-header-centered">
+                    <h2><i class="fas fa-code-branch me-2"></i>Code Changelog</h2>
+                    <p>Latest code changes from GitHub</p>
+                </div>
+
+                <!-- Loading State -->
+                <div id="changelogLoading" class="d-none" style="text-align: center; padding: 3rem;">
+                    <i class="fas fa-spinner fa-spin" style="font-size: 3rem; color: #667eea; margin-bottom: 1rem;"></i>
+                    <p style="color: rgba(255, 255, 255, 0.8);">Loading latest changes...</p>
+                </div>
+
+                <!-- Changelog Timeline -->
+                <div id="changelogTimeline" class="changelog-timeline">
+                    <!-- Commits will be populated here by JavaScript -->
+                </div>
+            </div>
+        </div>
+
+        <div class="live-preview-panel" id="livePreviewPanel">
+            <div class="preview-panel-header">
+                <h3><i class="fas fa-eye"></i> Live Preview</h3>
+                <button class="preview-toggle" id="previewToggle" title="Close Preview">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="preview-panel-content" id="previewPanelContent">
+                <div class="empty-preview">
+                    <i class="fas fa-images"></i>
+                    <p>Upload images to see live preview</p>
+                </div>
+            </div>
+        </div>
+        
+        <button class="reopen-preview-btn d-none" id="reopenPreviewBtn">
+            <i class="fas fa-eye me-2"></i>Open Live Preview
+        </button>
+    </div>
+
+    <div class="duplicate-modal d-none" id="duplicateModal">
+        <div class="duplicate-modal-content">
+            <button class="close-modal" id="closeDuplicateModal">&times;</button>
+            <div class="modal-header">
+                <h3><i class="fas fa-copy me-2"></i>Duplicate Detection Results</h3>
+            </div>
+            <div id="duplicateResults">
+                <p class="text-center">Scanning for duplicates...</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="preset-modal d-none" id="presetModal">
+        <div class="preset-modal-content">
+            <button class="close-modal" id="closePresetModal">&times;</button>
+            <div class="modal-header">
+                <h3><i class="fas fa-save me-2"></i>Save Preset</h3>
+            </div>
+            <div class="preset-form">
+                <label>Preset Name</label>
+                <input type="text" id="presetNameInput" class="preset-input" placeholder="e.g., High Quality WebP">
+                <button class="btn-custom" id="confirmSavePreset">
+                    <i class="fas fa-check me-2"></i>Save Preset
+                </button>
+            </div>
+        </div>
+    </div>
+
+  </div><!-- /.app-shell -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
+  <script src="assets/js/navbar.js"></script>
+  <script src="assets/js/converter.js"></script>
+  <script src="assets/js/pagespeed.js"></script>
+  <script src="assets/js/changelog.js"></script>
+  <script src="assets/js/app.js"></script>
+  <script src="assets/js/update-checker.js"></script>
+</body>
+</html>

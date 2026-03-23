@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>toolkit.artline-studio.de — Developer Utilities</title>
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <!-- Prevent theme flash before CSS loads -->
+  <script>
+    (function(){var t=localStorage.getItem('toolkit-theme');if(t)document.documentElement.setAttribute('data-theme',t);}());
+  </script>
+</head>
+<body>
+
+  <!-- ── Navbar ──────────────────────────────────────────────────────────────── -->
+  <nav class="navbar">
+    <a class="navbar__brand" href="index.html">
+      <span class="navbar__brand-dot"></span>
+      toolkit.artline-studio.de
+    </a>
+
+    <span class="navbar__sep"></span>
+
+    <div class="navbar__links" id="nav-links">
+      <a class="navbar__link is-active" href="index.html">Home</a>
+      <a class="navbar__link" href="text-comparisor/index.html">TextMatch</a>
+      <a class="navbar__link" href="bootstrap-builder/index.html">BS Builder</a>
+      <a class="navbar__link" href="webp-converter/index.html">WebP Converter</a>
+    </div>
+
+    <div class="navbar__right">
+      <button class="navbar__theme" data-action="toggle-theme" title="Toggle theme" aria-label="Toggle dark/light mode">
+        <svg class="icon-sun" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+          <circle cx="10" cy="10" r="3.5"/>
+          <line x1="10" y1="1.5" x2="10" y2="3.2"/>
+          <line x1="10" y1="16.8" x2="10" y2="18.5"/>
+          <line x1="1.5" y1="10" x2="3.2" y2="10"/>
+          <line x1="16.8" y1="10" x2="18.5" y2="10"/>
+          <line x1="4.1" y1="4.1" x2="5.4" y2="5.4"/>
+          <line x1="14.6" y1="14.6" x2="15.9" y2="15.9"/>
+          <line x1="15.9" y1="4.1" x2="14.6" y2="5.4"/>
+          <line x1="5.4" y1="14.6" x2="4.1" y2="15.9"/>
+        </svg>
+        <svg class="icon-moon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 13.5A7 7 0 016.5 3a7 7 0 1010.5 10.5z"/>
+        </svg>
+      </button>
+      <button class="navbar__burger" data-action="toggle-menu" aria-label="Toggle navigation" aria-expanded="false">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="page">
+
+    <!-- ── Hero ──────────────────────────────────────────────────────────────── -->
+    <section class="hero">
+      <p class="hero__eyebrow">artline-studio · developer utilities</p>
+      <h1 class="hero__title">
+        A small<br />
+        <em>toolkit</em><br />
+        for the web.
+      </h1>
+      <p class="hero__sub">Three lightweight browser-based tools. No installs, no accounts. Just open and use.</p>
+    </section>
+
+    <!-- ── Section label ─────────────────────────────────────────────────────── -->
+    <div class="section-header">
+      <span class="section-header__label">Pick a tool</span>
+      <span class="section-header__line"></span>
+    </div>
+
+    <!-- ── Tools grid ────────────────────────────────────────────────────────── -->
+    <div class="tools">
+
+      <a class="tool-card" href="text-comparisor/index.html">
+        <span class="tool-card__num">01</span>
+        <span class="tool-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="18" rx="1.5"/>
+            <rect x="14" y="3" width="7" height="18" rx="1.5"/>
+            <line x1="5" y1="7" x2="8" y2="7"/>
+            <line x1="5" y1="10" x2="8" y2="10"/>
+            <line x1="5" y1="13" x2="7" y2="13"/>
+            <line x1="16" y1="7" x2="19" y2="7"/>
+            <line x1="16" y1="10" x2="19" y2="10"/>
+            <line x1="16" y1="13" x2="18" y2="13"/>
+          </svg>
+        </span>
+        <span class="tool-card__tag">Text · HTML</span>
+        <span class="tool-card__name">TextMatch Comparator</span>
+        <span class="tool-card__desc">Compare HTML source against Word document text. Spots missing and extra content with visual diff highlighting and one-click fix.</span>
+        <span class="tool-card__footer">
+          <span class="tool-card__cta">Open tool</span>
+          <span class="tool-card__arrow">
+            <svg viewBox="0 0 14 14" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 11L11 3M5 3h6v6"/>
+            </svg>
+          </span>
+        </span>
+      </a>
+
+      <a class="tool-card" href="bootstrap-builder/index.html">
+        <span class="tool-card__num">02</span>
+        <span class="tool-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="7" height="5" rx="1"/>
+            <rect x="14" y="3" width="7" height="9" rx="1"/>
+            <rect x="3" y="12" width="7" height="9" rx="1"/>
+            <rect x="14" y="16" width="7" height="5" rx="1"/>
+          </svg>
+        </span>
+        <span class="tool-card__tag">Bootstrap 5 · Components</span>
+        <span class="tool-card__name">Bootstrap Builder</span>
+        <span class="tool-card__desc">Browse and configure every Bootstrap 5 component and icon with live preview. Tweak settings, see the result, copy the HTML instantly.</span>
+        <span class="tool-card__footer">
+          <span class="tool-card__cta">Open tool</span>
+          <span class="tool-card__arrow">
+            <svg viewBox="0 0 14 14" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 11L11 3M5 3h6v6"/>
+            </svg>
+          </span>
+        </span>
+      </a>
+
+      <a class="tool-card" href="webp-converter/index.html">
+        <span class="tool-card__num">03</span>
+        <span class="tool-card__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="3" width="18" height="18" rx="2"/>
+            <circle cx="8.5" cy="8.5" r="1.5"/>
+            <path d="M3 15l5-5 4 4 3-3 6 6"/>
+          </svg>
+        </span>
+        <span class="tool-card__tag">Images · Conversion</span>
+        <span class="tool-card__name">WebP Converter Pro</span>
+        <span class="tool-card__desc">Convert images to and from WebP, JPG, and PNG in the browser. Batch processing, quality control, and PageSpeed insights built in.</span>
+        <span class="tool-card__footer">
+          <span class="tool-card__cta">Open tool</span>
+          <span class="tool-card__arrow">
+            <svg viewBox="0 0 14 14" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 11L11 3M5 3h6v6"/>
+            </svg>
+          </span>
+        </span>
+      </a>
+
+    </div>
+
+    <footer class="site-footer">
+      <span class="site-footer__text">toolkit.artline-studio.de</span>
+      <span class="site-footer__sep"></span>
+      <span class="site-footer__text">3 tools · all browser-based · no data sent</span>
+    </footer>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
+  <script src="assets/js/navbar.js"></script>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
