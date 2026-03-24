@@ -1,0 +1,36 @@
+name: Update version.json on push
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  update-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update version.json
+        run: |
+          VERSION="1.0.$(date +%s | tail -c 4)"
+          TIMESTAMP=$(date +%s%3N)
+          HASH=$(git rev-parse --short HEAD)
+          BRANCH=$(git rev-parse --abbrev-ref HEAD)
+          DATE=$(date -u +%Y-%m-%dT%H:%M:%S.000Z)
+          
+          echo "{
+            \"version\": \"$VERSION\",
+            \"timestamp\": $TIMESTAMP,
+            \"hash\": \"$HASH\",
+            \"branch\": \"$BRANCH\",
+            \"buildDate\": \"$DATE\",
+            \"deployedBy\": \"sumasearch\"
+          }" > webp-converter/assets/json/version.json
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add webp-converter/assets/json/version.json
+          git diff --staged --quiet || git commit -m "chore: update version.json [skip ci]"
+          git push
