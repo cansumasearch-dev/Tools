@@ -1,59 +1,40 @@
 /**
- * App Initialization
- * Main entry point that initializes the ImageConverter and sets up global event handlers
- * 
- * Load order:
- * 1. converter.js    - Main ImageConverter class
- * 2. pagespeed.js    - PageSpeed Insights module
- * 3. changelog.js    - Changelog module
- * 4. app.js          - This file (initialization)
+ * app.js — Init + notification preference system
  */
+const NOTIF_VERSION = 'v2.0.0-redesign';
 
-document.addEventListener('DOMContentLoaded', () => {
-    // Initialize the converter
-    window.converter = new ImageConverter();
+function initNotifications() {
+  const pref        = localStorage.getItem('notif-pref') || 'reload';
+  const lastVersion = localStorage.getItem('notif-last-version');
+  const $panel      = $('#notifPanel');
+  const $bell       = $('#notifToggleBtn');
 
-    // ============================================================
-    // KEYBOARD SHORTCUTS
-    // ============================================================
-    document.addEventListener('keydown', (e) => {
-        if (e.ctrlKey || e.metaKey) {
-            switch (e.key) {
-                case 'o':
-                    // Ctrl/Cmd + O: Open file dialog
-                    e.preventDefault();
-                    document.getElementById('fileInput').click();
-                    break;
+  // Set active pref button
+  $('[data-pref]').removeClass('active').filter(`[data-pref="${pref}"]`).addClass('active');
 
-                case 'Enter':
-                    // Ctrl/Cmd + Enter: Start conversion
-                    e.preventDefault();
-                    if (!window.converter.isConverting && window.converter.files.length > 0) {
-                        window.converter.startConversion();
-                    }
-                    break;
-            }
-        }
-    });
+  let show = pref === 'always' || pref === 'reload' || (pref === 'update' && lastVersion !== NOTIF_VERSION);
+  if (show) { $panel.addClass('open'); $bell.addClass('has-notif'); }
+  localStorage.setItem('notif-last-version', NOTIF_VERSION);
 
-    // ============================================================
-    // PREVENT DEFAULT DRAG & DROP BEHAVIOR
-    // ============================================================
-    document.addEventListener('dragenter', (e) => e.preventDefault());
-    document.addEventListener('dragover', (e) => e.preventDefault());
-    document.addEventListener('drop', (e) => e.preventDefault());
+  // Bell toggles panel
+  $bell.on('click', () => $panel.toggleClass('open'));
 
-    // ============================================================
-    // SMOOTH SCROLLING
-    // ============================================================
-    document.documentElement.style.scrollBehavior = 'smooth';
+  // Close button
+  $('#notifClose').on('click', () => { $panel.removeClass('open'); });
 
-    // ============================================================
-    // DEBUG INFO (only in development)
-    // ============================================================
-    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        console.log('🚀 WebP Converter initialized');
-        console.log('📦 Modules loaded: converter, pagespeed, changelog');
-        console.log('⌨️ Shortcuts: Ctrl+O (open), Ctrl+Enter (convert)');
-    }
+  // Pref buttons
+  $(document).on('click', '[data-pref]', function() {
+    const p = $(this).data('pref');
+    $('[data-pref]').removeClass('active');
+    $(this).addClass('active');
+    localStorage.setItem('notif-pref', p);
+    if (p === 'never')  { $panel.removeClass('open'); $bell.removeClass('has-notif'); }
+    if (p === 'always') { $panel.addClass('open'); }
+  });
+}
+
+$(function () {
+  window.converter = new ImageConverter();
+  initNotifications();
+  $(document).on('dragenter dragover drop', (e) => e.preventDefault());
 });

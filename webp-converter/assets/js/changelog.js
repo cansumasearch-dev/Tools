@@ -22,8 +22,8 @@ ImageConverter.prototype.autoFetchChangelog = async function() {
     }
 
     console.log('🔄 Fetching changelog...');
-    this.changelogLoading.classList.remove('d-none');
-    this.changelogTimeline.innerHTML = '';
+    $("#clLoading").removeClass("d-none");
+    document.getElementById("changelogTimeline").innerHTML = '';
 
     try {
         const [owner, repo] = this.githubRepo.split('/');
@@ -64,16 +64,16 @@ ImageConverter.prototype.autoFetchChangelog = async function() {
             console.log('📋 Showing cached changelog');
             this.renderChangelog(this.changelogCache.commits);
         } else {
-            this.changelogTimeline.innerHTML = `
+            document.getElementById("changelogTimeline").innerHTML = `
                 <div class="changelog-empty">
-                    <i class="fas fa-exclamation-triangle"></i>
+                    <i class="bi bi-exclamation-triangle"></i>
                     <p>Failed to load changelog</p>
                     <p style="font-size: 0.9rem; color: rgba(255,255,255,0.5);">${error.message}</p>
                 </div>
             `;
         }
     } finally {
-        this.changelogLoading.classList.add('d-none');
+        $("#clLoading").addClass("d-none");
     }
 };
 
@@ -83,9 +83,9 @@ ImageConverter.prototype.autoFetchChangelog = async function() {
 
 ImageConverter.prototype.renderChangelog = function(commits) {
     if (!commits || commits.length === 0) {
-        this.changelogTimeline.innerHTML = `
+        document.getElementById("changelogTimeline").innerHTML = `
             <div class="changelog-empty">
-                <i class="fas fa-inbox"></i>
+                <i class="bi bi-inbox"></i>
                 <p>No commits found</p>
             </div>
         `;
@@ -107,15 +107,15 @@ ImageConverter.prototype.renderChangelog = function(commits) {
                     <h4 class="commit-message">${this.escapeHtml(message)}</h4>
                     <div class="commit-meta">
                         <div class="commit-author">
-                            <i class="fas fa-user"></i>
+                            <i class="bi bi-person"></i>
                             ${this.escapeHtml(author)}
                         </div>
                         <div class="commit-date">
-                            <i class="fas fa-calendar"></i>
+                            <i class="bi bi-calendar"></i>
                             ${formattedDate}
                         </div>
                         <div class="commit-sha">
-                            <i class="fas fa-code-branch"></i>
+                            <i class="bi bi-git"></i>
                             ${sha}
                         </div>
                     </div>
@@ -125,7 +125,7 @@ ImageConverter.prototype.renderChangelog = function(commits) {
         `;
     }).join('');
 
-    this.changelogTimeline.innerHTML = html;
+    document.getElementById("changelogTimeline").innerHTML = html;
 };
 
 // ============================================================
@@ -181,7 +181,7 @@ ImageConverter.prototype.renderCodeDiffs = function(files, commitIndex) {
                         <span class="additions">+${file.additions}</span>
                         <span class="deletions">-${file.deletions}</span>
                         <button class="toggle-diff-btn" onclick="converter.toggleDiff(${commitIndex}, ${fileIndex})">
-                            <i class="fas fa-chevron-up"></i>
+                            <i class="bi bi-chevron-up"></i>
                         </button>
                     </div>
                 </div>

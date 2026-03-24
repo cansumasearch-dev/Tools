@@ -8,15 +8,15 @@ ImageConverter.prototype.displayCurrentStrategy = function() {
     const data = this.currentPageSpeedData[this.pagespeedStrategy];
 
     if (!data) {
-        this.pagespeedResults.innerHTML = `
+        document.getElementById("psResults").innerHTML = `
             <div class="metrics-section">
-                <h3><i class="fas fa-info-circle me-2"></i>No Data Available</h3>
+                <h3><i class="bi bi-info-circle me-2"></i>No Data Available</h3>
                 <p class="no-data-message">
                     ${this.pagespeedStrategy === 'mobile' ? 'Mobile' : 'Desktop'} data not yet analyzed. Please run an analysis first.
                 </p>
             </div>
         `;
-        this.pagespeedResults.classList.remove('d-none');
+        $("#psResults").removeClass("d-none");
         return;
     }
 
@@ -27,10 +27,10 @@ ImageConverter.prototype.displayCurrentStrategy = function() {
 };
 
 ImageConverter.prototype.analyzePageSpeed = async function() {
-    if (!this.pagespeedUrl) return;
+    // url handled below
     if (this.isAnalyzingPageSpeed) return;
 
-    let url = this.pagespeedUrl.value.trim();
+    let url = $("#pagespeedUrl").val().trim();
 
     if (!url) {
         alert('Please enter a URL to analyze');
@@ -59,12 +59,12 @@ ImageConverter.prototype.analyzePageSpeed = async function() {
         'seo': true
     };
 
-    this.pagespeedLoading.classList.remove('d-none');
-    this.pagespeedResults.classList.add('d-none');
-    this.analyzePageSpeedBtn.disabled = true;
-    this.analyzePageSpeedBtn.innerHTML = `<i class="fas fa-spinner fa-spin me-2"></i>Analyzing Both...`;
+    $("#psLoading").removeClass("d-none");
+    $("#psResults").addClass("d-none");
+    $("#analyzeBtn").prop("disabled", true);
+    $("#analyzeBtn").html('')||$("#analyzeBtn")[0].innerHTML = `<i class="bi bi-arrow-repeat spin-anim me-2"></i>Analyzing Both...`;
 
-    this.pagespeedLoading.innerHTML = `
+    $("#psLoading").html('')||$("#psLoading")[0].innerHTML = `
         <div class="loading-content">
             <div class="loading-spinner"></div>
             <p class="loading-text">Analyzing Performance...</p>
@@ -126,9 +126,9 @@ ImageConverter.prototype.analyzePageSpeed = async function() {
         console.error('❌ PageSpeed error:', error);
         const errorMessage = error.message || 'Unknown error';
 
-        this.pagespeedResults.innerHTML = `
+        document.getElementById("psResults").innerHTML = `
             <div class="metrics-section error-section">
-                <h3><i class="fas fa-exclamation-triangle me-2"></i>Analysis Error</h3>
+                <h3><i class="bi bi-exclamation-triangle me-2"></i>Analysis Error</h3>
                 <p class="error-message">${errorMessage}</p>
                 <div class="troubleshooting-tips">
                     <h4>Troubleshooting Tips:</h4>
@@ -141,16 +141,16 @@ ImageConverter.prototype.analyzePageSpeed = async function() {
                 </div>
                 <div class="error-action">
                     <a href="https://pagespeed.web.dev/analysis?url=${encodeURIComponent(url)}" target="_blank" class="btn-action primary">
-                        <i class="fas fa-external-link-alt me-2"></i>Try on PageSpeed.web.dev
+                        <i class="bi bi-box-arrow-up-right me-2"></i>Try on PageSpeed.web.dev
                     </a>
                 </div>
             </div>
         `;
-        this.pagespeedResults.classList.remove('d-none');
+        $("#psResults").removeClass("d-none");
     } finally {
-        this.pagespeedLoading.classList.add('d-none');
-        this.analyzePageSpeedBtn.disabled = false;
-        this.analyzePageSpeedBtn.innerHTML = '<i class="fas fa-search me-2"></i>Analyze';
+        $("#psLoading").addClass("d-none");
+        $("#analyzeBtn").prop("disabled", false);
+        $("#analyzeBtn").html('')||$("#analyzeBtn")[0].innerHTML = '<i class="bi bi-search me-2"></i>Analyze';
         this.isAnalyzingPageSpeed = false;
     }
 };
@@ -343,11 +343,11 @@ ImageConverter.prototype.renderCategoryIssues = function(categoryName, icon, col
                         <h3><i class="fas ${icon} me-2" style="color: ${color};"></i>${categoryName} Issues</h3>
                         <span class="issues-count good">0 issues</span>
                     </div>
-                    <i class="fas fa-chevron-down accordion-icon"></i>
+                    <i class="bi bi-chevron-down accordion-icon"></i>
                 </div>
                 <div class="accordion-content" id="content-${categoryId}">
                     <div class="no-issues">
-                        <i class="fas fa-check-circle"></i>
+                        <i class="bi bi-check-circle"></i>
                         <p>All ${categoryName.toLowerCase()} checks passed!</p>
                     </div>
                 </div>
@@ -362,11 +362,11 @@ ImageConverter.prototype.renderCategoryIssues = function(categoryName, icon, col
         let savingsHTML = '';
         if (audit.details) {
             if (audit.details.overallSavingsMs) {
-                savingsHTML += `<span class="savings-tag"><i class="fas fa-clock me-1"></i>${(audit.details.overallSavingsMs / 1000).toFixed(1)}s</span>`;
+                savingsHTML += `<span class="savings-tag"><i class="bi bi-clock me-1"></i>${(audit.details.overallSavingsMs / 1000).toFixed(1)}s</span>`;
             }
             if (audit.details.overallSavingsBytes) {
                 const kb = Math.round(audit.details.overallSavingsBytes / 1024);
-                savingsHTML += `<span class="savings-tag"><i class="fas fa-weight me-1"></i>${kb} KB</span>`;
+                savingsHTML += `<span class="savings-tag"><i class="bi bi-weight me-1"></i>${kb} KB</span>`;
             }
         }
 
@@ -401,7 +401,7 @@ ImageConverter.prototype.renderCategoryIssues = function(categoryName, icon, col
                     </div>
                 </div>
                 ${savingsHTML ? `<div class="issue-savings">${savingsHTML}</div>` : ''}
-                ${audit.displayValue ? `<div class="issue-value"><i class="fas fa-info-circle me-1"></i>${audit.displayValue}</div>` : ''}
+                ${audit.displayValue ? `<div class="issue-value"><i class="bi bi-info-circle me-1"></i>${audit.displayValue}</div>` : ''}
                 ${itemsHTML}
             </div>
         `;
@@ -416,7 +416,7 @@ ImageConverter.prototype.renderCategoryIssues = function(categoryName, icon, col
                     <h3><i class="fas ${icon} me-2" style="color: ${color};"></i>${categoryName} Issues</h3>
                     <span class="issues-count ${countClass}">${audits.length} issue${audits.length !== 1 ? 's' : ''}</span>
                 </div>
-                <i class="fas fa-chevron-down accordion-icon"></i>
+                <i class="bi bi-chevron-down accordion-icon"></i>
             </div>
             <div class="accordion-content" id="content-${categoryId}">
                 <div class="issues-list">
@@ -485,7 +485,7 @@ ImageConverter.prototype.displayPageSpeedResults = function(data, strategy) {
             <div class="pagespeed-actions">
                 ${this.previousPageSpeedResults ? `
                     <button class="btn-action" onclick="converter.showComparison()">
-                        <i class="fas fa-history me-2"></i>Compare with Previous
+                        <i class="bi bi-history me-2"></i>Compare with Previous
                     </button>
                 ` : ''}
                 <button class="btn-action" onclick="converter.showOptimizationTips('octobercms')">
@@ -532,7 +532,7 @@ ImageConverter.prototype.displayPageSpeedResults = function(data, strategy) {
             </div>
 
             <div class="metrics-section">
-                <h3><i class="fas fa-clock me-2"></i>Core Web Vitals</h3>
+                <h3><i class="bi bi-clock me-2"></i>Core Web Vitals</h3>
                 <div class="metric-item">
                     <div class="metric-name">
                         <strong>First Contentful Paint (FCP)</strong>
@@ -577,29 +577,29 @@ ImageConverter.prototype.displayPageSpeedResults = function(data, strategy) {
 
             <div class="chatgpt-section">
                 <button class="btn-chatgpt" onclick="converter.openChatGPT('octobercms')">
-                    <i class="fas fa-comments me-2"></i>Chat with AI about OctoberCMS Optimization
+                    <i class="bi bi-comments me-2"></i>Chat with AI about OctoberCMS Optimization
                 </button>
                 <button class="btn-chatgpt" onclick="converter.openChatGPT('wordpress')">
-                    <i class="fas fa-comments me-2"></i>Chat with AI about WordPress Optimization
+                    <i class="bi bi-comments me-2"></i>Chat with AI about WordPress Optimization
                 </button>
             </div>
         `;
 
-        this.pagespeedResults.innerHTML = html;
-        this.pagespeedResults.classList.remove('d-none');
+        document.getElementById("psResults").innerHTML = html;
+        $("#psResults").removeClass("d-none");
 
         // Restore accordion states (or open all on first analysis)
         this.restoreAccordionStates();
 
     } catch (error) {
         console.error('Error displaying PageSpeed results:', error);
-        this.pagespeedResults.innerHTML = `
+        document.getElementById("psResults").innerHTML = `
             <div class="metrics-section">
-                <h3><i class="fas fa-exclamation-triangle me-2"></i>Display Error</h3>
+                <h3><i class="bi bi-exclamation-triangle me-2"></i>Display Error</h3>
                 <p class="error-message">Failed to display PageSpeed results</p>
             </div>
         `;
-        this.pagespeedResults.classList.remove('d-none');
+        $("#psResults").removeClass("d-none");
     }
 };
 
@@ -750,7 +750,7 @@ ImageConverter.prototype.getOctoberCMSTips = function(opportunities) {
         if (title.toLowerCase().includes('image') || title.toLowerCase().includes('next-gen')) {
             tip = `
                 <div class="tip-card">
-                    <h4><i class="fas fa-image me-2"></i>${title}</h4>
+                    <h4><i class="bi bi-image me-2"></i>${title}</h4>
                     <p class="tip-description">${description}</p>
                     <div class="tip-solution">
                         <strong>OctoberCMS Solution:</strong>
@@ -766,7 +766,7 @@ ImageConverter.prototype.getOctoberCMSTips = function(opportunities) {
         } else if (title.toLowerCase().includes('render-blocking') || title.toLowerCase().includes('css') || title.toLowerCase().includes('javascript')) {
             tip = `
                 <div class="tip-card">
-                    <h4><i class="fas fa-code me-2"></i>${title}</h4>
+                    <h4><i class="bi bi-code me-2"></i>${title}</h4>
                     <p class="tip-description">${description}</p>
                     <div class="tip-solution">
                         <strong>OctoberCMS Solution:</strong>
@@ -782,7 +782,7 @@ ImageConverter.prototype.getOctoberCMSTips = function(opportunities) {
         } else if (title.toLowerCase().includes('cache') || title.toLowerCase().includes('browser caching')) {
             tip = `
                 <div class="tip-card">
-                    <h4><i class="fas fa-server me-2"></i>${title}</h4>
+                    <h4><i class="bi bi-server me-2"></i>${title}</h4>
                     <p class="tip-description">${description}</p>
                     <div class="tip-solution">
                         <strong>OctoberCMS Solution:</strong>
@@ -798,7 +798,7 @@ ImageConverter.prototype.getOctoberCMSTips = function(opportunities) {
         } else if (title.toLowerCase().includes('text compression') || title.toLowerCase().includes('gzip')) {
             tip = `
                 <div class="tip-card">
-                    <h4><i class="fas fa-compress me-2"></i>${title}</h4>
+                    <h4><i class="bi bi-compress me-2"></i>${title}</h4>
                     <p class="tip-description">${description}</p>
                     <div class="tip-solution">
                         <strong>OctoberCMS Solution:</strong>
@@ -813,7 +813,7 @@ ImageConverter.prototype.getOctoberCMSTips = function(opportunities) {
         } else if (title.toLowerCase().includes('unused css') || title.toLowerCase().includes('unused javascript')) {
             tip = `
                 <div class="tip-card">
-                    <h4><i class="fas fa-broom me-2"></i>${title}</h4>
+                    <h4><i class="bi bi-broom me-2"></i>${title}</h4>
                     <p class="tip-description">${description}</p>
                     <div class="tip-solution">
                         <strong>OctoberCMS Solution:</strong>
@@ -833,7 +833,7 @@ ImageConverter.prototype.getOctoberCMSTips = function(opportunities) {
 
     html += `
         <div class="tip-card general-tips">
-            <h4><i class="fas fa-star me-2"></i>General OctoberCMS Performance Tips (2025)</h4>
+            <h4><i class="bi bi-star me-2"></i>General OctoberCMS Performance Tips (2025)</h4>
             <div class="tip-solution">
                 <ul>
                     <li><strong>PHP 8.3:</strong> Upgrade to PHP 8.3 for 20-30% performance boost</li>
@@ -866,7 +866,7 @@ ImageConverter.prototype.getWordPressTips = function(opportunities) {
         if (title.toLowerCase().includes('image') || title.toLowerCase().includes('next-gen')) {
             tip = `
                 <div class="tip-card">
-                    <h4><i class="fas fa-image me-2"></i>${title}</h4>
+                    <h4><i class="bi bi-image me-2"></i>${title}</h4>
                     <p class="tip-description">${description}</p>
                     <div class="tip-solution">
                         <strong>WordPress Solution:</strong>
@@ -882,7 +882,7 @@ ImageConverter.prototype.getWordPressTips = function(opportunities) {
         } else if (title.toLowerCase().includes('render-blocking') || title.toLowerCase().includes('css') || title.toLowerCase().includes('javascript')) {
             tip = `
                 <div class="tip-card">
-                    <h4><i class="fas fa-code me-2"></i>${title}</h4>
+                    <h4><i class="bi bi-code me-2"></i>${title}</h4>
                     <p class="tip-description">${description}</p>
                     <div class="tip-solution">
                         <strong>WordPress Solution:</strong>
@@ -898,7 +898,7 @@ ImageConverter.prototype.getWordPressTips = function(opportunities) {
         } else if (title.toLowerCase().includes('cache') || title.toLowerCase().includes('browser caching')) {
             tip = `
                 <div class="tip-card">
-                    <h4><i class="fas fa-server me-2"></i>${title}</h4>
+                    <h4><i class="bi bi-server me-2"></i>${title}</h4>
                     <p class="tip-description">${description}</p>
                     <div class="tip-solution">
                         <strong>WordPress Solution:</strong>
@@ -914,7 +914,7 @@ ImageConverter.prototype.getWordPressTips = function(opportunities) {
         } else if (title.toLowerCase().includes('text compression') || title.toLowerCase().includes('gzip')) {
             tip = `
                 <div class="tip-card">
-                    <h4><i class="fas fa-compress me-2"></i>${title}</h4>
+                    <h4><i class="bi bi-compress me-2"></i>${title}</h4>
                     <p class="tip-description">${description}</p>
                     <div class="tip-solution">
                         <strong>WordPress Solution:</strong>
@@ -930,7 +930,7 @@ ImageConverter.prototype.getWordPressTips = function(opportunities) {
         } else if (title.toLowerCase().includes('unused css') || title.toLowerCase().includes('unused javascript')) {
             tip = `
                 <div class="tip-card">
-                    <h4><i class="fas fa-broom me-2"></i>${title}</h4>
+                    <h4><i class="bi bi-broom me-2"></i>${title}</h4>
                     <p class="tip-description">${description}</p>
                     <div class="tip-solution">
                         <strong>WordPress Solution:</strong>
@@ -950,7 +950,7 @@ ImageConverter.prototype.getWordPressTips = function(opportunities) {
 
     html += `
         <div class="tip-card general-tips">
-            <h4><i class="fas fa-star me-2"></i>General WordPress Performance Tips (2025)</h4>
+            <h4><i class="bi bi-star me-2"></i>General WordPress Performance Tips (2025)</h4>
             <div class="tip-solution">
                 <ul>
                     <li><strong>PHP 8.3:</strong> Upgrade to PHP 8.3 for massive performance gains</li>
