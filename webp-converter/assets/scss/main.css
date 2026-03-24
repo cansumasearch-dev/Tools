@@ -60,7 +60,6 @@ p, h1, h2, h3, h4, h5, h6, strong, small, span, label, figcaption {
 
 body {
   font-family: var(--bs-font-sans-serif);
-  background: var(--bs-body-bg);
   color: var(--bs-body-color);
   padding-top: var(--nav-h);
   min-height: 100vh;
