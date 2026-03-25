@@ -89,86 +89,81 @@
 <script src="assets/js/navbar.js"></script>
 <script src="assets/js/update-checker.js"></script>
 <script>
-// Standalone PageSpeed — no ImageConverter dependency
 (function(){
   function fmtSize(b){if(!b)return'0 B';const k=1024,s=['B','KB','MB','GB'],i=Math.floor(Math.log(Math.max(b,1))/Math.log(k));return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+s[i];}
-  let strategy='mobile';
-  let data={mobile:null,desktop:null};
+  var strategy='mobile';
+  var psData={mobile:null,desktop:null};
 
   $(function(){
-    const _h=JSON.parse(localStorage.getItem('converterHistory')||'[]');$('#sidebarConversions').text(_h.reduce((s,i)=>s+i.fileCount,0));$('#sidebarSaved').text(fmtSize(_h.reduce((s,i)=>s+(i.originalSize-i.convertedSize),0)));
+    var _h=JSON.parse(localStorage.getItem('converterHistory')||'[]');
+    $('#sidebarConversions').text(_h.reduce(function(s,i){return s+i.fileCount;},0));
+    $('#sidebarSaved').text(fmtSize(_h.reduce(function(s,i){return s+(i.originalSize-i.convertedSize);},0)));
     $('#analyzeBtn').on('click',analyze);
     $('#pagespeedUrl').on('keypress',function(e){if(e.key==='Enter')analyze();});
     $(document).on('click','.device-btn',function(){
       $('.device-btn').removeClass('active btn-primary').addClass('btn-outline-secondary');
       $(this).addClass('active btn-primary').removeClass('btn-outline-secondary');
       strategy=$(this).data('strategy');
-      if(data[strategy])showResults(data[strategy],strategy);
+      if(psData[strategy])showResults(psData[strategy]);
     });
   });
 
-  async function analyze(){
-    let url=$('#pagespeedUrl').val().trim();
+  function analyze(){
+    var url=$('#pagespeedUrl').val().trim();
     if(!url){alert('Enter a URL');return;}
     if(!url.startsWith('http'))url='https://'+url;
-    try{new URL(url);}catch{alert('Invalid URL');return;}
-
+    try{new URL(url);}catch(e){alert('Invalid URL');return;}
     $('#analyzeBtn').prop('disabled',true).html('<i class="bi bi-arrow-repeat spin-anim me-1"></i>Analyzing...');
     $('#psLoading').removeClass('d-none');
     $('#psResults').addClass('d-none');
-
-    try{
-      const [mob,desk]=await Promise.all([
-        fetch(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=mobile`).then(r=>r.json()),
-        fetch(`https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${encodeURIComponent(url)}&strategy=desktop`).then(r=>r.json())
-      ]);
-      data.mobile=mob; data.desktop=desk;
-      showResults(data[strategy],strategy);
-    }catch(e){
-      $('#psLoading').addClass('d-none');
-      $('#psResults').removeClass('d-none').html('<div class="alert alert-danger">Failed to analyze. Check the URL and try again.</div>');
-    }finally{
+    Promise.all([
+      fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url='+encodeURIComponent(url)+'&strategy=mobile').then(function(r){return r.json();}),
+      fetch('https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url='+encodeURIComponent(url)+'&strategy=desktop').then(function(r){return r.json();})
+    ]).then(function(results){
+      psData.mobile=results[0];
+      psData.desktop=results[1];
+      showResults(psData[strategy]);
+    }).catch(function(){
+      $('#psResults').removeClass('d-none').html('<div class="alert alert-danger">Failed to analyze. Check the URL.</div>');
+    }).finally(function(){
       $('#analyzeBtn').prop('disabled',false).html('<i class="bi bi-search me-1"></i>Analyze');
       $('#psLoading').addClass('d-none');
-    }
+    });
   }
 
-  function score(n){return n>=90?'good':n>=50?'avg':'bad';}
+  function scoreClass(n){return n>=90?'good':n>=50?'avg':'bad';}
 
-  function showResults(d,strat){
-    if(!d)return;
-    const cats=d.lighthouseResult&&d.lighthouseResult.categories||{};
-    const perf=Math.round((cats.performance&&cats.performance.score||0)*100);
-    const acc=Math.round((cats.accessibility&&cats.accessibility.score||0)*100);
-    const bp=Math.round((cats['best-practices']&&cats['best-practices'].score||0)*100);
-    const seo=Math.round((cats.seo&&cats.seo.score||0)*100);
-
-    let html=`<div class="row g-3 mb-4">
-      <div class="col-6 col-md-3"><div class="score-card"><div class="score-val ${score(perf)}">${perf}</div><div class="score-lbl">Performance</div></div></div>
-      <div class="col-6 col-md-3"><div class="score-card"><div class="score-val ${score(acc)}">${acc}</div><div class="score-lbl">Accessibility</div></div></div>
-      <div class="col-6 col-md-3"><div class="score-card"><div class="score-val ${score(bp)}">${bp}</div><div class="score-lbl">Best Practices</div></div></div>
-      <div class="col-6 col-md-3"><div class="score-card"><div class="score-val ${score(seo)}">${seo}</div><div class="score-lbl">SEO</div></div></div>
-    </div>`;
-
-    // Core Web Vitals
-    const audits=d.lighthouseResult&&d.lighthouseResult.audits||{};
-    const vitals=[
-      {id:'first-contentful-paint',label:'FCP'},
-      {id:'largest-contentful-paint',label:'LCP'},
-      {id:'total-blocking-time',label:'TBT'},
-      {id:'cumulative-layout-shift',label:'CLS'},
-      {id:'speed-index',label:'Speed Index'},
-      {id:'interactive',label:'TTI'},
+  function showResults(d){
+    if(!d||!d.lighthouseResult)return;
+    var cats=d.lighthouseResult.categories||{};
+    var perf=Math.round(((cats.performance||{}).score||0)*100);
+    var acc=Math.round(((cats.accessibility||{}).score||0)*100);
+    var bp=Math.round(((cats['best-practices']||{}).score||0)*100);
+    var seo=Math.round(((cats.seo||{}).score||0)*100);
+    var audits=d.lighthouseResult.audits||{};
+    var vitals=[
+      {id:'first-contentful-paint',lbl:'FCP'},
+      {id:'largest-contentful-paint',lbl:'LCP'},
+      {id:'total-blocking-time',lbl:'TBT'},
+      {id:'cumulative-layout-shift',lbl:'CLS'},
+      {id:'speed-index',lbl:'Speed Index'},
+      {id:'interactive',lbl:'TTI'}
     ];
-    html+=`<div class="card mb-4"><div class="card-header fw-semibold small">Core Web Vitals</div><div class="card-body"><div class="row g-3">`;
-    vitals.forEach(v=>{
-      const a=audits[v.id];
+    var vHtml='';
+    vitals.forEach(function(v){
+      var a=audits[v.id];
       if(!a)return;
-      const s=a.score>=0.9?'text-success':a.score>=0.5?'text-warning':'text-danger';
-      html+=`<div class="col-6 col-md-4"><div class="d-flex flex-column gap-1"><div class="small text-secondary">${v.label}</div><div class="fw-bold ${s}">${a.displayValue||'—'}</div></div></div>`;
+      var cls=a.score>=0.9?'text-success':a.score>=0.5?'text-warning':'text-danger';
+      vHtml+='<div class="col-6 col-md-4"><div class="d-flex flex-column gap-1"><div class="small text-secondary">'+v.lbl+'</div><div class="fw-bold '+cls+'">'+(a.displayValue||'—')+'</div></div></div>';
     });
-    html+=`</div></div></div>`;
-
+    var html='<div class="row g-3 mb-4">'+
+      '<div class="col-6 col-md-3"><div class="score-card"><div class="score-val '+scoreClass(perf)+'">'+perf+'</div><div class="score-lbl">Performance</div></div></div>'+
+      '<div class="col-6 col-md-3"><div class="score-card"><div class="score-val '+scoreClass(acc)+'">'+acc+'</div><div class="score-lbl">Accessibility</div></div></div>'+
+      '<div class="col-6 col-md-3"><div class="score-card"><div class="score-val '+scoreClass(bp)+'">'+bp+'</div><div class="score-lbl">Best Practices</div></div></div>'+
+      '<div class="col-6 col-md-3"><div class="score-card"><div class="score-val '+scoreClass(seo)+'">'+seo+'</div><div class="score-lbl">SEO</div></div></div>'+
+    '</div>'+
+    '<div class="card mb-4"><div class="card-header fw-semibold small">Core Web Vitals</div>'+
+    '<div class="card-body"><div class="row g-3">'+vHtml+'</div></div></div>';
     $('#psResults').removeClass('d-none').html(html);
   }
 })();

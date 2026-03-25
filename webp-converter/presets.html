@@ -82,23 +82,45 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="assets/js/navbar.js"></script>
 <script src="assets/js/update-checker.js"></script>
-<script>$(function(){
+<script>
+$(function(){
   function fmtSize(b){if(!b)return'0 B';const k=1024,s=['B','KB','MB','GB'],i=Math.floor(Math.log(Math.max(b,1))/Math.log(k));return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+s[i];}
-  const fl={'image/webp':'WebP','image/jpeg':'JPEG','image/png':'PNG'};
+  var fmtLabel={'image/webp':'WebP','image/jpeg':'JPEG','image/png':'PNG'};
   function render(){
-    const p=JSON.parse(localStorage.getItem('converterPresets')||'[]');
-    const $g=$('#presetsGrid');
-    if(!p.length){$g.html('<div class="col-12"><div class="empty-state"><i class="bi bi-sliders"></i><h5>No saved presets</h5><p>Save your settings from the Converter page</p></div></div>');return;}
-    $g.html(p.map(pr=>`<div class="col-12 col-sm-6 col-lg-4"><div class="preset-entry"><div class="preset-entry__name mb-3">${pr.name}</div><div class="d-flex flex-column gap-1 mb-3"><div class="preset-entry__row"><span class="preset-entry__lbl">Mode</span><span class="preset-entry__val">${pr.convMode}</span></div><div class="preset-entry__row"><span class="preset-entry__lbl">Format</span><span class="preset-entry__val">${fl[pr.targetFormat]||'WebP'}</span></div><div class="preset-entry__row"><span class="preset-entry__lbl">Quality</span><span class="preset-entry__val">${Math.round(pr.quality*100)}%</span></div><div class="preset-entry__row"><span class="preset-entry__lbl">Size</span><span class="preset-entry__val">${pr.targetW}&times;${pr.targetH}</span></div></div><div class="d-flex gap-2"><a class="btn btn-primary btn-sm flex-grow-1" href="index.html?preset=${pr.id}"><i class="bi bi-check me-1"></i>Load</a><button class="btn btn-outline-danger btn-sm del-btn" data-id="${pr.id}"><i class="bi bi-trash"></i></button></div></div></div>`).join(''));
+    var p=JSON.parse(localStorage.getItem('converterPresets')||'[]');
+    var $g=$('#presetsGrid');
+    if(!p.length){
+      $g.html('<div class="col-12"><div class="empty-state"><i class="bi bi-sliders"></i><h5>No saved presets</h5><p>Save your settings from the Converter page</p></div></div>');
+      return;
+    }
+    $g.html(p.map(function(pr){
+      return '<div class="col-12 col-sm-6 col-lg-4"><div class="preset-entry">'+
+        '<div class="preset-entry__name mb-3">'+pr.name+'</div>'+
+        '<div class="d-flex flex-column gap-1 mb-3">'+
+          '<div class="preset-entry__row"><span class="preset-entry__lbl">Mode</span><span class="preset-entry__val">'+pr.convMode+'</span></div>'+
+          '<div class="preset-entry__row"><span class="preset-entry__lbl">Format</span><span class="preset-entry__val">'+(fmtLabel[pr.targetFormat]||'WebP')+'</span></div>'+
+          '<div class="preset-entry__row"><span class="preset-entry__lbl">Quality</span><span class="preset-entry__val">'+Math.round(pr.quality*100)+'%</span></div>'+
+          '<div class="preset-entry__row"><span class="preset-entry__lbl">Size</span><span class="preset-entry__val">'+pr.targetW+'&times;'+pr.targetH+'</span></div>'+
+        '</div>'+
+        '<div class="d-flex gap-2">'+
+          '<a class="btn btn-primary btn-sm flex-grow-1" href="index.html?preset='+pr.id+'"><i class="bi bi-check me-1"></i>Load</a>'+
+          '<button class="btn btn-outline-danger btn-sm del-btn" data-id="'+pr.id+'"><i class="bi bi-trash"></i></button>'+
+        '</div>'+
+      '</div></div>';
+    }).join(''));
   }
   render();
   $(document).on('click','.del-btn',function(){
     if(!confirm('Delete preset?'))return;
-    let p=JSON.parse(localStorage.getItem('converterPresets')||'[]');
-    p=p.filter(x=>x.id!==parseInt($(this).data('id')));
+    var id=parseInt($(this).data('id'));
+    var p=JSON.parse(localStorage.getItem('converterPresets')||'[]');
+    p=p.filter(function(x){return x.id!==id;});
     localStorage.setItem('converterPresets',JSON.stringify(p));
     render();
   });
-  const _h=JSON.parse(localStorage.getItem('converterHistory')||'[]');$('#sidebarConversions').text(_h.reduce((s,i)=>s+i.fileCount,0));$('#sidebarSaved').text(fmtSize(_h.reduce((s,i)=>s+(i.originalSize-i.convertedSize),0)));
-});</script>
+  const _h=JSON.parse(localStorage.getItem('converterHistory')||'[]');
+    $('#sidebarConversions').text(_h.reduce(function(s,i){return s+i.fileCount;},0));
+    $('#sidebarSaved').text(fmtSize(_h.reduce(function(s,i){return s+(i.originalSize-i.convertedSize);},0)));
+});
+</script>
 </body></html>

@@ -49,24 +49,30 @@ class ImageConverter {
 
   // ── Section management ────────────────────────────────────────────────
   _restoreSection() {
-    const last = localStorage.getItem('lastSection') || 'converter';
-    this.switchSection(last);
+    // Only 'converter' is a valid section on index.html now
+    // All other sections are separate pages
+    localStorage.setItem('lastSection', 'converter');
+    this.switchSection('converter');
   }
 
   switchSection(name) {
+    // Other sections are separate pages now
+    const pageMap = {
+      history   : 'history.html',
+      stats     : 'stats.html',
+      presets   : 'presets.html',
+      pagespeed : 'pagespeed.html',
+      changelog : 'changelog.html',
+    };
+    if (pageMap[name]) {
+      window.location.href = pageMap[name];
+      return;
+    }
+    // Converter section (only section on this page)
     $('.sidebar-nav-link').removeClass('active');
-    $('.content-section').removeClass('active');
-    $(`[data-section="${name}"]`).addClass('active');
-    $(`#${name}Section`).addClass('active');
-    localStorage.setItem('lastSection', name);
-    $('#topbarTitle').text(this._sectionTitle(name));
-
-    if (name !== 'converter') {
-      $('#previewPanel').addClass('d-none');
-    }
-    if (name === 'changelog' && !this.changelogFetched) {
-      setTimeout(() => this.autoFetchChangelog(), 400);
-    }
+    $('[href="index.html"]').addClass('active');
+    localStorage.setItem('lastSection', 'converter');
+    $('#topbarTitle').text('Image Converter');
   }
 
   _sectionTitle(name) {

@@ -83,50 +83,57 @@
 <script>
 (function(){
   function fmtSize(b){if(!b)return'0 B';const k=1024,s=['B','KB','MB','GB'],i=Math.floor(Math.log(Math.max(b,1))/Math.log(k));return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+s[i];}
-  const REPO='cansumasearch-dev/Tools';
-  const CACHE_KEY='changelogCache';
+  var REPO='cansumasearch-dev/Tools';
+  var CACHE_KEY='changelogCache';
 
   $(function(){
-    const _h=JSON.parse(localStorage.getItem('converterHistory')||'[]');$('#sidebarConversions').text(_h.reduce((s,i)=>s+i.fileCount,0));$('#sidebarSaved').text(fmtSize(_h.reduce((s,i)=>s+(i.originalSize-i.convertedSize),0)));
+    var _h=JSON.parse(localStorage.getItem('converterHistory')||'[]');
+    $('#sidebarConversions').text(_h.reduce(function(s,i){return s+i.fileCount;},0));
+    $('#sidebarSaved').text(fmtSize(_h.reduce(function(s,i){return s+(i.originalSize-i.convertedSize);},0)));
     loadChangelog();
   });
 
-  async function loadChangelog(){
-    const cached=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
+  function loadChangelog(){
+    var cached=JSON.parse(localStorage.getItem(CACHE_KEY)||'null');
     if(cached&&cached.fetchedAt){
-      const age=Date.now()-new Date(cached.fetchedAt).getTime();
+      var age=Date.now()-new Date(cached.fetchedAt).getTime();
       if(age<3600000){renderChangelog(cached.commits);return;}
     }
-    try{
-      const res=await fetch(`https://api.github.com/repos/${REPO}/commits?per_page=15`);
-      if(!res.ok)throw new Error('GitHub API '+res.status);
-      const commits=await res.json();
-      localStorage.setItem(CACHE_KEY,JSON.stringify({commits,fetchedAt:new Date().toISOString()}));
-      renderChangelog(commits);
-    }catch(e){
-      if(cached&&cached.commits){renderChangelog(cached.commits);return;}
-      $('#clLoading').addClass('d-none');
-      $('#changelogTimeline').removeClass('d-none').html('<div class="empty-state"><i class="bi bi-exclamation-triangle"></i><h5>Failed to load</h5><p>'+e.message+'</p></div>');
-    }
+    fetch('https://api.github.com/repos/'+REPO+'/commits?per_page=15')
+      .then(function(r){if(!r.ok)throw new Error('GitHub API '+r.status);return r.json();})
+      .then(function(commits){
+        localStorage.setItem(CACHE_KEY,JSON.stringify({commits:commits,fetchedAt:new Date().toISOString()}));
+        renderChangelog(commits);
+      })
+      .catch(function(e){
+        if(cached&&cached.commits){renderChangelog(cached.commits);return;}
+        $('#clLoading').addClass('d-none');
+        $('#changelogTimeline').removeClass('d-none').html('<div class="empty-state"><i class="bi bi-exclamation-triangle"></i><h5>Failed to load</h5><p>'+e.message+'</p></div>');
+      });
   }
 
   function renderChangelog(commits){
     $('#clLoading').addClass('d-none');
-    const $t=$('#changelogTimeline').removeClass('d-none');
-    if(!commits||!commits.length){$t.html('<div class="empty-state"><i class="bi bi-git"></i><h5>No commits found</h5></div>');return;}
-    $t.html(commits.map(c=>{
-      const msg=c.commit&&c.commit.message||'No message';
-      const author=c.commit&&c.commit.author&&c.commit.author.name||'Unknown';
-      const date=c.commit&&c.commit.author&&c.commit.author.date?new Date(c.commit.author.date).toLocaleDateString():'';
-      const hash=(c.sha||'').substring(0,7);
-      const firstLine=msg.split('\n')[0];
-      if(firstLine.includes('[skip ci]'))return'';
-      return `<div class="cl-entry">
-        <div class="cl-entry__meta"><span class="cl-entry__hash">${hash}</span><span class="cl-entry__date">${date}</span></div>
-        <div class="cl-entry__msg">${firstLine}</div>
-        <div class="cl-entry__author"><i class="bi bi-person"></i> ${author}</div>
-      </div>`;
-    }).filter(Boolean).join(''));
+    var $t=$('#changelogTimeline').removeClass('d-none');
+    if(!commits||!commits.length){
+      $t.html('<div class="empty-state"><i class="bi bi-git"></i><h5>No commits found</h5></div>');
+      return;
+    }
+    var html=commits.map(function(c){
+      var msg=(c.commit&&c.commit.message)||'No message';
+      var author=(c.commit&&c.commit.author&&c.commit.author.name)||'Unknown';
+      var date=c.commit&&c.commit.author&&c.commit.author.date?new Date(c.commit.author.date).toLocaleDateString():'';
+      var hash=(c.sha||'').substring(0,7);
+      var firstLine=msg.split('
+')[0];
+      if(firstLine.indexOf('[skip ci]')>-1)return'';
+      return '<div class="cl-entry">'+
+        '<div class="cl-entry__meta"><span class="cl-entry__hash">'+hash+'</span><span class="cl-entry__date">'+date+'</span></div>'+
+        '<div class="cl-entry__msg">'+firstLine+'</div>'+
+        '<div class="cl-entry__author"><i class="bi bi-person"></i> '+author+'</div>'+
+      '</div>';
+    }).filter(Boolean).join('');
+    $t.html(html||'<div class="empty-state"><i class="bi bi-git"></i><h5>No visible commits</h5></div>');
   }
 })();
 </script>
