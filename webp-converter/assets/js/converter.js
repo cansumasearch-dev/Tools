@@ -43,60 +43,23 @@ class ImageConverter {
     this._renderPresets();
     this._updateSidebarStats();
     this._initNotifications();
-    this._restoreSection();
+    // No section restore needed - index.html only has the converter
     this._updatePresetSelector();
   }
 
   // ── Section management ────────────────────────────────────────────────
-  _restoreSection() {
-    // Only 'converter' is a valid section on index.html now
-    // All other sections are separate pages
-    localStorage.setItem('lastSection', 'converter');
-    this.switchSection('converter');
-  }
+  // No switchSection needed - each page is its own HTML file
 
-  switchSection(name) {
-    // Other sections are separate pages now
-    const pageMap = {
-      history   : 'history.html',
-      stats     : 'stats.html',
-      presets   : 'presets.html',
-      pagespeed : 'pagespeed.html',
-      changelog : 'changelog.html',
-    };
-    if (pageMap[name]) {
-      window.location.href = pageMap[name];
-      return;
-    }
-    // Converter section (only section on this page)
-    $('.sidebar-nav-link').removeClass('active');
-    $('[href="index.html"]').addClass('active');
-    localStorage.setItem('lastSection', 'converter');
-    $('#topbarTitle').text('Image Converter');
-  }
 
-  _sectionTitle(name) {
-    const map = {
-      converter : 'Image Converter',
-      history   : 'Conversion History',
-      stats     : 'Statistics',
-      presets   : 'Saved Presets',
-      pagespeed : 'PageSpeed Insights',
-      changelog : 'Changelog',
-    };
-    return map[name] || name;
-  }
 
   // ── Event binding ─────────────────────────────────────────────────────
   _bindEvents() {
     const self = this;
 
-    // Sidebar nav
-    $(document).on('click', '.sidebar-nav-link', function(e) {
-      e.preventDefault();
-      const section = $(this).data('section');
-      self.switchSection(section);
-      const oc = bootstrap.Offcanvas.getInstance($('#sidebarOffcanvas')[0]);
+    // Sidebar nav — links are real href links, no JS interception needed
+    // Just close offcanvas when a link is clicked
+    $(document).on('click', '.sidebar-nav-link', function() {
+      const oc = bootstrap.Offcanvas.getInstance($('#sidebar')[0]);
       if (oc) oc.hide();
     });
 
@@ -218,15 +181,7 @@ class ImageConverter {
       const tool = $(this).data('tool');
       window.converter._applyTool(id, tool);
     });
-    $(document).on('click', '.icon-btn.download', function() {
-      window.converter._downloadFile(parseFloat($(this).data('id')));
-    });
-    $(document).on('click', '.icon-btn.remove', function() {
-      window.converter._removeFile(parseFloat($(this).data('id')));
-    });
-    $(document).on('click', '.icon-btn.preview-btn', function() {
-      window.converter._showCompare(parseFloat($(this).data('id')));
-    });
+    // .icon-btn handlers removed — using .tool-btn.dl/.remove/.preview instead
 
     // ── File list — delegated on document (bound ONCE, never re-bound) ──
     $(document).on('click', '#fileList .tool-btn[data-tool]', e => {
@@ -680,58 +635,6 @@ class ImageConverter {
       }
     });
 
-    // ─ Delegated events ────────────────────────────────────────────────────
-    $list.on('click', '.tool-btn[data-tool]', e => {
-      this._applyTool(parseFloat($(e.currentTarget).data('id')), $(e.currentTarget).data('tool'));
-    });
-    $list.on('click', '.tool-btn.dl',     e => this._downloadFile(parseFloat($(e.currentTarget).data('id'))));
-    $list.on('click', '.tool-btn.remove', e => this._removeFile(parseFloat($(e.currentTarget).data('id'))));
-    $list.on('click', '.tool-btn.preview',e => this._showCompare(parseFloat($(e.currentTarget).data('id'))));
-
-    // Per-file control events
-    $list.on('change', '.file-mode-sel', e => {
-      const id = parseFloat($(e.target).data('id'));
-      const f  = this.files.find(x => x.id === id);
-      if (!f) return;
-      f._mode = e.target.value;
-      this._renderFileList(); // re-render to show/hide quality/resize
-    });
-    $list.on('change', '.file-format-sel', e => {
-      const id = parseFloat($(e.target).data('id'));
-      const f  = this.files.find(x => x.id === id);
-      if (f) f._format = e.target.value;
-    });
-    $list.on('input', '.file-quality-sel', function() {
-      const id = parseFloat($(this).data('id'));
-      const f  = window.converter.files.find(x => x.id === id);
-      if (f) { f._quality = this.value / 100; }
-      $(`.file-quality-val[data-id="${id}"]`).text(this.value + '%');
-    });
-    $list.on('change', '.file-width-sel', function() {
-      const id = parseFloat($(this).data('id'));
-      const f  = window.converter.files.find(x => x.id === id);
-      if (!f) return;
-      f._width = parseInt(this.value) || 1920;
-      if (f._keepAspect !== false && f.dims) {
-        const [w, h] = f.dims.split('x').map(Number);
-        f._height = Math.round(f._width * h / w);
-        $(`.file-height-sel[data-id="${id}"]`).val(f._height);
-      }
-    });
-    $list.on('change', '.file-height-sel', function() {
-      const id = parseFloat($(this).data('id'));
-      const f  = window.converter.files.find(x => x.id === id);
-      if (f && f._keepAspect === false) f._height = parseInt(this.value) || 1080;
-    });
-    $list.on('click', '.file-aspect-btn', function() {
-      const id = parseFloat($(this).data('id'));
-      const f  = window.converter.files.find(x => x.id === id);
-      if (!f) return;
-      f._keepAspect = !(f._keepAspect !== false);
-      $(this).toggleClass('active', f._keepAspect !== false);
-      $(this).find('i').attr('class', `bi bi-${f._keepAspect !== false ? 'lock' : 'unlock'}`);
-      $(`.file-height-sel[data-id="${id}"]`).prop('disabled', f._keepAspect !== false);
-    });
   }
 
     _getDimText(f) {
@@ -934,7 +837,7 @@ class ImageConverter {
 
   // ── Preview ───────────────────────────────────────────────────────────
   async _updateLivePreview() {
-    if (!$('#previewPanel').is(':visible') || this.files.length === 0) {
+    if ($('#previewPanel').hasClass('d-none') || this.files.length === 0) {
       $('#previewGrid').html(`
         <div class="preview-empty">
           <i class="bi bi-images"></i>
@@ -950,18 +853,17 @@ class ImageConverter {
       return `
         <div class="preview-card">
           <div class="preview-card__name">${f.name}</div>
-          <div class="preview-card__images">
+          <div class="preview-card__sides">
             <div class="preview-card__side">
-              <div class="preview-card__label">Original</div>
+              <div class="preview-card__lbl">Original</div>
               <img class="preview-card__img" src="${origUrl}" alt="original" />
-              <div class="preview-card__size">${this._fmtSize(f.size)}</div>
+              <div class="preview-card__sz">${this._fmtSize(f.size)}</div>
             </div>
             <div class="preview-card__side">
-              <div class="preview-card__label">Preview</div>
+              <div class="preview-card__lbl">Preview</div>
               <img class="preview-card__img" src="${prevUrl}" alt="preview" />
-              <div class="preview-card__size">${f.convSize > 0 ? this._fmtSize(f.convSize) : 'Not converted yet'}</div>
+              <div class="preview-card__sz">${f.convSize > 0 ? this._fmtSize(f.convSize) : 'Not converted yet'}</div>
             </div>
-          </div>
         </div>
       `;
     }));
