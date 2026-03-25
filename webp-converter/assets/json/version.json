@@ -1,8 +1,8 @@
 {
-  "version": "1.0.254",
-  "timestamp": 1774433254268,
-  "hash": "8718946",
+  "version": "1.0.588",
+  "timestamp": 1774433588710,
+  "hash": "dcaffb9",
   "branch": "main",
-  "buildDate": "2026-03-25T10:07:34.000Z",
+  "buildDate": "2026-03-25T10:13:08.000Z",
   "deployedBy": "sumasearch"
 }
