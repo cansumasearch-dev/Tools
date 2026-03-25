@@ -124,6 +124,21 @@ class ImageConverter {
       self._updateRenamePreview();
     });
 
+    // Individual per-file rename
+    $(document).on('input', '#fileList .file-rename-input', function() {
+      const id = parseFloat($(this).data('id'));
+      const f  = self.files.find(x => x.id === id);
+      if (!f) return;
+      f._customName = this.value.trim();
+      // Update the name display inline without full re-render
+      const idx = self.files.indexOf(f);
+      const finalName = self._getFinalName(f, idx);
+      const nameHtml  = finalName.replace(/\.[^.]+$/, '') !== f.name.replace(/\.[^.]+$/, '')
+        ? `${f.name} <span style="color:var(--bs-tertiary-color)">→ ${finalName}</span>`
+        : f.name;
+      $(`[data-file-id="${f.id}"] .file-item__name`).html(nameHtml);
+    });
+
     // Bulk
     $('#sortSizeBtn').on('click', () => { this.files.sort((a,b) => b.size - a.size); this._renderFileList(); });
     $('#sortSavingsBtn').on('click', () => { this.files.sort((a,b) => b.savings - a.savings); this._renderFileList(); });
@@ -613,6 +628,7 @@ class ImageConverter {
             <div class="file-item__info">
               <div class="file-item__name">${nameHtml}</div>
               <div class="file-item__meta">${metaParts}</div>
+              <input type="text" class="file-rename-input form-control form-control-sm mt-1" data-id="${f.id}" placeholder="Custom name (without extension)…" value="${f._customName || ''}" style="font-size:11px;height:24px;padding:2px 6px;opacity:0.7;transition:opacity .15s" />
             </div>
             <div class="file-item__actions">
               ${savings}
@@ -705,7 +721,7 @@ class ImageConverter {
   _updateRenamePreview() {
     if (this.renamePrefix && this.files.length > 0) {
       const examples = this.files.slice(0, 3).map((f, i) => {
-        return `<span class="preview-badge">${this.renamePrefix}_${i+1}.${this._getExt(f)}</span>`;
+        return `<span class="preview-badge">${this.renamePrefix} (${i+1}).${this._getExt(f)}</span>`;
       }).join('');
       $('#renamePreview').html(examples + (this.files.length > 3 ? '<span class="preview-badge">…</span>' : ''));
     } else {
@@ -726,7 +742,8 @@ class ImageConverter {
 
   _getFinalName(f, idx) {
     const ext = this._getExt(f);
-    if (this.renamePrefix) return `${this.renamePrefix}_${idx+1}.${ext}`;
+    if (f._customName && f._customName.trim()) return `${f._customName.trim()}.${ext}`;
+    if (this.renamePrefix) return `${this.renamePrefix} (${idx+1}).${ext}`;
     return f.name.replace(/\.(jpe?g|png|svg|webp)$/i, `.${ext}`);
   }
 
