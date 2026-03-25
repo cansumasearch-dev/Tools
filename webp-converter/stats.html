@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Statistics — toolkit.artline-studio.de</title>
+  <link rel="icon" href="assets/images/fav-icon.png"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/scss/main.css"/>
+  <script>(function(){var t=localStorage.getItem('toolkit-theme')||'light';document.documentElement.setAttribute('data-bs-theme',t);})();</script>
+</head>
+<body>
+<div class="update-strip" id="updateStrip">
+  <div class="container-xl px-3 d-flex align-items-center gap-3">
+    <i class="bi bi-arrow-up-circle me-1"></i>
+    <span id="updateMsg" class="me-auto">A new version is available!</span>
+    <button class="btn btn-dark btn-sm" id="updateNowBtn"><i class="bi bi-arrow-clockwise me-1"></i>Update Now</button>
+    <button class="close-strip" id="updateDismiss" style="background:none;border:none;color:rgba(0,0,0,.6);font-size:20px;cursor:pointer;padding:0 6px">&times;</button>
+  </div>
+</div>
+<nav class="navbar navbar-expand-md">
+  <div class="container-xl px-3">
+    <a class="navbar-brand" href="../index.html"><span class="nav-dot"></span>toolkit.artline-studio.de</a>
+    <button class="navbar-toggler border-0 p-1" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+      <i class="bi bi-list" style="font-size:15px;color:var(--bs-secondary-color)"></i>
+    </button>
+    <div class="collapse navbar-collapse" id="mainNav">
+      <ul class="navbar-nav me-auto gap-1 ms-3">
+        <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="../text-comparisor/index.html">TextMatch</a></li>
+        <li class="nav-item"><a class="nav-link" href="../bootstrap-builder/index.html">BS Builder</a></li>
+        <li class="nav-item"><a class="nav-link active" href="index.html">WebP Converter</a></li>
+      </ul>
+      <div class="d-flex align-items-center gap-2 ms-md-2">
+        <button class="btn-theme" data-action="toggle-theme" aria-label="Toggle theme">
+          <svg class="icon-sun" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10" cy="10" r="3.5"/><line x1="10" y1="1.5" x2="10" y2="3.2"/><line x1="10" y1="16.8" x2="10" y2="18.5"/><line x1="1.5" y1="10" x2="3.2" y2="10"/><line x1="16.8" y1="10" x2="18.5" y2="10"/><line x1="4.1" y1="4.1" x2="5.4" y2="5.4"/><line x1="14.6" y1="14.6" x2="15.9" y2="15.9"/><line x1="15.9" y1="4.1" x2="14.6" y2="5.4"/><line x1="5.4" y1="14.6" x2="4.1" y2="15.9"/></svg>
+          <svg class="icon-moon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 13.5A7 7 0 016.5 3a7 7 0 1010.5 10.5z"/></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="offcanvas offcanvas-start" tabindex="-1" id="sidebar">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title"><i class="bi bi-stars"></i> WebP Converter</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas"></button>
+  </div>
+  <div class="offcanvas-body d-flex flex-column gap-1 px-2">
+    <p style="font-size:10px;letter-spacing:.08em;color:var(--bs-tertiary-color);font-family:var(--bs-font-monospace);text-transform:uppercase;font-weight:600" class="px-2">Navigation</p>
+    <a class="sidebar-nav-link" href="index.html"><i class="bi bi-stars"></i> Converter</a>
+    <a class="sidebar-nav-link" href="history.html"><i class="bi bi-clock-history"></i> History</a>
+    <a class="sidebar-nav-link  active" href="stats.html"><i class="bi bi-bar-chart-fill"></i> Statistics</a>
+    <a class="sidebar-nav-link" href="presets.html"><i class="bi bi-sliders"></i> Saved Presets</a>
+    <a class="sidebar-nav-link" href="pagespeed.html"><i class="bi bi-speedometer2"></i> PageSpeed</a>
+    <a class="sidebar-nav-link" href="changelog.html"><i class="bi bi-git"></i> Changelog</a>
+    <hr style="border-color:var(--bs-border-color)"/>
+    <p style="font-size:10px;letter-spacing:.08em;color:var(--bs-tertiary-color);font-family:var(--bs-font-monospace);text-transform:uppercase;font-weight:600" class="px-2">Stats</p>
+    <div class="px-2 d-flex flex-column gap-2">
+      <div class="sidebar-stat-row"><div class="sidebar-stat-row__icon"><i class="bi bi-images"></i></div><div><div class="sidebar-stat-row__lbl">Conversions</div><div class="sidebar-stat-row__val" id="sidebarConversions">0</div></div></div>
+      <div class="sidebar-stat-row"><div class="sidebar-stat-row__icon"><i class="bi bi-compress"></i></div><div><div class="sidebar-stat-row__lbl">Space Saved</div><div class="sidebar-stat-row__val" id="sidebarSaved">0 B</div></div></div>
+    </div>
+    <div class="mt-auto px-2 pb-2" style="font-size:11px;color:var(--bs-tertiary-color);font-family:var(--bs-font-monospace)">WebP Converter Pro v2.0</div>
+  </div>
+</div>
+<div class="page-topbar">
+  <div class="container-xl px-3 d-flex align-items-center gap-3">
+    <button class="btn btn-outline-secondary btn-sm" data-bs-toggle="offcanvas" data-bs-target="#sidebar"><i class="bi bi-list"></i></button>
+    <span class="topbar-title"><i class="bi bi-bar-chart-fill"></i> Statistics</span>
+  </div>
+</div>
+
+<div class="container-xl px-3 py-4">
+  <div class="section-head mb-4"><h2><i class="bi bi-bar-chart-fill"></i> Statistics</h2><p>All-time conversion stats</p></div>
+  <div class="row g-3">
+    <div class="col-6 col-md-3"><div class="card stat-card-xl h-100"><div class="card-body d-flex flex-column gap-2"><div class="stat-lbl">Total Conversions</div><div class="stat-val" id="s1">0</div><div class="small text-secondary">images</div></div></div></div>
+    <div class="col-6 col-md-3"><div class="card stat-card-xl h-100"><div class="card-body d-flex flex-column gap-2"><div class="stat-lbl">Space Saved</div><div class="stat-val" id="s2">0 B</div><div class="small text-secondary">total</div></div></div></div>
+    <div class="col-6 col-md-3"><div class="card stat-card-xl h-100"><div class="card-body d-flex flex-column gap-2"><div class="stat-lbl">Avg. Savings</div><div class="stat-val" id="s3">0%</div><div class="small text-secondary">per session</div></div></div></div>
+    <div class="col-6 col-md-3"><div class="card stat-card-xl h-100"><div class="card-body d-flex flex-column gap-2"><div class="stat-lbl">Sessions</div><div class="stat-val" id="s4">0</div><div class="small text-secondary">total</div></div></div></div>
+  </div>
+</div>
+<div class="app-toast" id="appToast"></div>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="assets/js/navbar.js"></script>
+<script src="assets/js/update-checker.js"></script>
+<script>$(function(){
+  function fmtSize(b){if(!b)return'0 B';const k=1024,s=['B','KB','MB','GB'],i=Math.floor(Math.log(Math.max(b,1))/Math.log(k));return parseFloat((b/Math.pow(k,i)).toFixed(2))+' '+s[i];}
+  const h=JSON.parse(localStorage.getItem('converterHistory')||'[]');
+  $('#s1').text(h.reduce((s,i)=>s+i.fileCount,0));
+  $('#s2').text(fmtSize(h.reduce((s,i)=>s+(i.originalSize-i.convertedSize),0)));
+  $('#s3').text((h.length?Math.round(h.reduce((s,i)=>s+i.totalSavings,0)/h.length):0)+'%');
+  $('#s4').text(h.length);
+  const _h=JSON.parse(localStorage.getItem('converterHistory')||'[]');$('#sidebarConversions').text(_h.reduce((s,i)=>s+i.fileCount,0));$('#sidebarSaved').text(fmtSize(_h.reduce((s,i)=>s+(i.originalSize-i.convertedSize),0)));
+});</script>
+</body></html>

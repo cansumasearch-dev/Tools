@@ -28,7 +28,7 @@ class ImageConverter {
     this.currentPageSpeedData    = { mobile: null, desktop: null };
     this.isAnalyzingPageSpeed    = false;
     this.previousPageSpeedResults = this.loadPreviousPageSpeed();
-    this.githubRepo              = 'cansumasearch-dev/webp-converter';
+    this.githubRepo              = 'cansumasearch-dev/Tools';
     this.changelogCache          = this.loadChangelogCache();
     this.changelogFetched        = false;
     this.accordionStates         = {};
