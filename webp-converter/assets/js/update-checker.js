@@ -31,7 +31,17 @@
         const dismiss   = document.getElementById('updateDismiss');
         const updateNow = document.getElementById('updateNowBtn');
         if (dismiss)   dismiss.addEventListener('click',   () => hideUpdateBanner());
-        if (updateNow) updateNow.addEventListener('click', () => location.reload());
+        if (updateNow) updateNow.addEventListener('click', () => {
+            // Save the latest version before reload so banner won't reappear
+            fetch(VERSION_URL + '?t=' + Date.now())
+                .then(r => r.json())
+                .then(data => {
+                    const v = data.version || data.hash || String(data.timestamp);
+                    localStorage.setItem(STORAGE_KEY, v);
+                    location.reload();
+                })
+                .catch(() => location.reload());
+        });
     }
 
     async function checkForUpdates() {
@@ -71,8 +81,15 @@
             updateBanner.classList.remove('show');
             document.body.classList.remove('update-visible');
         }
-        // Save new version so banner doesn't re-appear until next update
-        checkForUpdates().then(() => {}).catch(() => {});
+        // Fetch and store latest version so banner stays gone until next real update
+        fetch(VERSION_URL + '?t=' + Date.now())
+            .then(r => r.json())
+            .then(data => {
+                const v = data.version || data.hash || String(data.timestamp);
+                localStorage.setItem(STORAGE_KEY, v);
+                currentVersion = v;
+            })
+            .catch(() => {});
     }
 
     // Force show for testing

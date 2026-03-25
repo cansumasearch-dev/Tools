@@ -54,7 +54,7 @@ class ImageConverter {
   }
 
   switchSection(name) {
-    $('.sidebar-nav-item').removeClass('active');
+    $('.sidebar-nav-link').removeClass('active');
     $('.content-section').removeClass('active');
     $(`[data-section="${name}"]`).addClass('active');
     $(`#${name}Section`).addClass('active');
@@ -86,7 +86,7 @@ class ImageConverter {
     const self = this;
 
     // Sidebar nav
-    $(document).on('click', '.sidebar-nav-item', function(e) {
+    $(document).on('click', '.sidebar-nav-link', function(e) {
       e.preventDefault();
       const section = $(this).data('section');
       self.switchSection(section);
@@ -220,6 +220,65 @@ class ImageConverter {
     });
     $(document).on('click', '.icon-btn.preview-btn', function() {
       window.converter._showCompare(parseFloat($(this).data('id')));
+    });
+
+    // ── File list — delegated on document (bound ONCE, never re-bound) ──
+    $(document).on('click', '#fileList .tool-btn[data-tool]', e => {
+      const id = parseFloat($(e.currentTarget).data('id'));
+      const tool = $(e.currentTarget).data('tool');
+      this._applyTool(id, tool);
+    });
+    $(document).on('click', '#fileList .tool-btn.dl', e => {
+      this._downloadFile(parseFloat($(e.currentTarget).data('id')));
+    });
+    $(document).on('click', '#fileList .tool-btn.remove', e => {
+      this._removeFile(parseFloat($(e.currentTarget).data('id')));
+    });
+    $(document).on('click', '#fileList .tool-btn.preview', e => {
+      this._showCompare(parseFloat($(e.currentTarget).data('id')));
+    });
+    $(document).on('change', '#fileList .file-mode-sel', e => {
+      const id = parseFloat($(e.target).data('id'));
+      const f  = this.files.find(x => x.id === id);
+      if (!f) return;
+      f._mode = e.target.value;
+      this._renderFileList();
+    });
+    $(document).on('change', '#fileList .file-format-sel', e => {
+      const id = parseFloat($(e.target).data('id'));
+      const f  = this.files.find(x => x.id === id);
+      if (f) f._format = e.target.value;
+    });
+    $(document).on('input', '#fileList .file-quality-sel', function() {
+      const id = parseFloat($(this).data('id'));
+      const f  = window.converter.files.find(x => x.id === id);
+      if (f) f._quality = this.value / 100;
+      $(`#fileList .file-quality-val[data-id="${id}"]`).text(this.value + '%');
+    });
+    $(document).on('change', '#fileList .file-width-sel', function() {
+      const id = parseFloat($(this).data('id'));
+      const f  = window.converter.files.find(x => x.id === id);
+      if (!f) return;
+      f._width = parseInt(this.value) || 1920;
+      if (f._keepAspect !== false && f.dims) {
+        const [w, h] = f.dims.split('x').map(Number);
+        f._height = Math.round(f._width * h / w);
+        $(`#fileList .file-height-sel[data-id="${id}"]`).val(f._height);
+      }
+    });
+    $(document).on('change', '#fileList .file-height-sel', function() {
+      const id = parseFloat($(this).data('id'));
+      const f  = window.converter.files.find(x => x.id === id);
+      if (f && f._keepAspect === false) f._height = parseInt(this.value) || 1080;
+    });
+    $(document).on('click', '#fileList .file-aspect-btn', function() {
+      const id = parseFloat($(this).data('id'));
+      const f  = window.converter.files.find(x => x.id === id);
+      if (!f) return;
+      f._keepAspect = !(f._keepAspect !== false);
+      $(this).toggleClass('active', f._keepAspect !== false);
+      $(this).find('i').attr('class', `bi bi-${f._keepAspect !== false ? 'lock' : 'unlock'}`);
+      $(`#fileList .file-height-sel[data-id="${id}"]`).prop('disabled', f._keepAspect !== false);
     });
 
     // Keyboard shortcuts
@@ -401,9 +460,34 @@ class ImageConverter {
 
   async _loadDims(obj) {
     const url = await this._toDataUrl(obj.file);
-    const img = new Image();
-    img.onload = () => { obj.dims = `${img.width}x${img.height}`; this._renderFileList(); };
-    img.src = url;
+    obj.origDataUrl = url; // store immediately for thumbnail
+    return new Promise(resolve => {
+      const img = new Image();
+      img.onload = () => {
+        obj.dims = `${img.width}x${img.height}`;
+        // Update only this file's meta text and thumb — no full re-render
+        const $item = $(`[data-file-id="${obj.id}"]`);
+        if ($item.length) {
+          $item.find('.file-item__thumb').attr('src', url).show();
+          const meta = $item.find('.file-item__meta');
+          if (meta.length) {
+            const idx = this.files.indexOf(obj);
+            const parts = [
+              this._fmtSize(obj.size),
+              obj.dims,
+              this._getDimText(obj),
+            ].filter(Boolean).join(' · ');
+            meta.text(parts);
+          }
+        } else {
+          // Item not rendered yet — trigger a clean single render
+          this._renderFileList();
+        }
+        resolve();
+      };
+      img.onerror = () => resolve();
+      img.src = url;
+    });
   }
 
   _removeFile(id) {
@@ -583,14 +667,10 @@ class ImageConverter {
       $list.append($item);
     });
 
-    // Async thumbnail loading for pending files
+    // Thumbnails are loaded by _loadDims — just set src if already available
     this.files.forEach(f => {
-      if (!f.origDataUrl && f.status === 'pending') {
-        this._toDataUrl(f.file).then(url => {
-          f.origDataUrl = url;
-          $(`[data-file-id="${f.id}"] .file-item__thumb`).attr('src', url).show();
-          $(`[data-file-id="${f.id}"] .file-item__thumb`).removeClass('d-flex').addClass('d-block');
-        });
+      if (f.origDataUrl) {
+        $(`[data-file-id="${f.id}"] img.file-item__thumb`).attr('src', f.origDataUrl);
       }
     });
 

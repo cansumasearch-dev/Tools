@@ -62,15 +62,15 @@ ImageConverter.prototype.analyzePageSpeed = async function() {
     $("#psLoading").removeClass("d-none");
     $("#psResults").addClass("d-none");
     $("#analyzeBtn").prop("disabled", true);
-    $("#analyzeBtn").html('')||$("#analyzeBtn")[0].innerHTML = `<i class="bi bi-arrow-repeat spin-anim me-2"></i>Analyzing Both...`;
+    $("#analyzeBtn").html(`<i class="bi bi-arrow-repeat spin-anim me-2"></i>Analyzing Both...`);
 
-    $("#psLoading").html('')||$("#psLoading")[0].innerHTML = `
+    $("#psLoading").html(`
         <div class="loading-content">
             <div class="loading-spinner"></div>
             <p class="loading-text">Analyzing Performance...</p>
             <p class="loading-hint">This may take 20-30 seconds...</p>
         </div>
-    `;
+    `);
 
     try {
         // Cloudflare Worker URL
@@ -150,7 +150,7 @@ ImageConverter.prototype.analyzePageSpeed = async function() {
     } finally {
         $("#psLoading").addClass("d-none");
         $("#analyzeBtn").prop("disabled", false);
-        $("#analyzeBtn").html('')||$("#analyzeBtn")[0].innerHTML = '<i class="bi bi-search me-2"></i>Analyze';
+        $("#analyzeBtn").html('<i class="bi bi-search me-2"></i>Analyze');
         this.isAnalyzingPageSpeed = false;
     }
 };
