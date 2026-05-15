@@ -452,8 +452,7 @@ ${bar1}
       { id: 'btnVariant', type: 'select', label: 'Button variant', options: ['primary','secondary','success','danger','warning','info','dark'] },
     ],
     generate(values) {
-      const sm      = values.size === 'sm' ? ' spinner-${values.type}-sm' : '';
-      const sizeClass = values.size === 'sm' ? ` spinner-${values.type}-sm` : '';
+      const sizeClass = values.size === 'sm' ? ` spinner-${values.type||'border'}-sm` : '';
       const label = values.label || 'Loading...';
       const spinner = `<div class="spinner-${values.type||'border'}${sizeClass} text-${values.variant||'primary'}" role="status">
   <span class="visually-hidden">${label}</span>
@@ -934,7 +933,7 @@ ${parts.join('\n')}
 // ─── Icons state ──────────────────────────────────────────────────────────────
 let ALL_ICONS   = [];
 let ICONS_LOADED = false;
-let iconCopyMode = 'font'; // 'font' or 'svg'
+let iconCopyMode = 'class'; // 'class' | 'svg' | 'unicode'
 let iconSize     = 24;
 let iconFilter   = '';
 
@@ -1228,18 +1227,17 @@ ${code}
 
 // ─── Icons Loading ────────────────────────────────────────────────────────────
 async function loadBootstrapIcons() {
-  $('icons-loader').classList.remove('hidden');
-  $('icons-grid').innerHTML = '';
+  const grid = $('icons-grid');
+  grid.innerHTML = '<p style="padding:24px;color:var(--bs-secondary-color)">Loading icons…</p>';
   try {
     const resp = await fetch('https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css');
     const css  = await resp.text();
     const matches = [...css.matchAll(/\.bi-([\w-]+)::before/g)];
     ALL_ICONS = [...new Set(matches.map(m => m[1]))].sort();
     ICONS_LOADED = true;
-    $('icons-loader').classList.add('hidden');
     renderIconsGrid();
   } catch(e) {
-    $('icons-loader').innerHTML = '<p>Failed to load icons. Check your connection.</p>';
+    grid.innerHTML = '<p style="padding:24px;color:var(--bs-danger-color)">Failed to load icons. Check your connection.</p>';
   }
 }
 
@@ -1247,7 +1245,7 @@ function renderIconsGrid() {
   const grid = $('icons-grid');
   const fl   = iconFilter.toLowerCase();
   const filtered = fl ? ALL_ICONS.filter(n => n.includes(fl)) : ALL_ICONS;
-  $('icons-count').innerHTML = `<span>${filtered.length}</span> of ${ALL_ICONS.length} icons`;
+  $('icon-count-val').textContent = `${filtered.length} of ${ALL_ICONS.length}`;
 
   grid.innerHTML = '';
   const frag = document.createDocumentFragment();
@@ -1262,9 +1260,14 @@ function renderIconsGrid() {
 }
 
 function copyIcon(name, cell) {
-  const code = iconCopyMode === 'font'
-    ? `<i class="bi bi-${name}"></i>`
-    : `<svg xmlns="http://www.w3.org/2000/svg" width="${iconSize}" height="${iconSize}" fill="currentColor" class="bi bi-${name}" viewBox="0 0 16 16">\n  <!-- SVG path here: https://icons.getbootstrap.com/icons/${name}/ -->\n</svg>`;
+  let code;
+  if (iconCopyMode === 'svg') {
+    code = `<svg xmlns="http://www.w3.org/2000/svg" width="${iconSize}" height="${iconSize}" fill="currentColor" class="bi bi-${name}" viewBox="0 0 16 16">\n  <!-- SVG path: https://icons.getbootstrap.com/icons/${name}/ -->\n</svg>`;
+  } else if (iconCopyMode === 'unicode') {
+    code = `&#x${(0xe000 + ALL_ICONS.indexOf(name)).toString(16).toUpperCase()};`;
+  } else {
+    code = `<i class="bi bi-${name}"></i>`;
+  }
   copyText(code);
   cell.classList.add('copied');
   setTimeout(() => cell.classList.remove('copied'), 700);
@@ -1332,9 +1335,9 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Icons – copy mode
-  document.querySelectorAll('.mode-btn').forEach(btn => {
+  document.querySelectorAll('.copy-mode-toggle button').forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.copy-mode-toggle button').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       iconCopyMode = btn.dataset.mode;
     });

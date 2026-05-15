@@ -1,0 +1,323 @@
+/* ===== Reset & Base ===== */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    min-height: 100vh;
+    color: #1a1a1a;
+    padding: 20px;
+}
+
+/* ===== Container ===== */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+/* ===== Header ===== */
+.header {
+    text-align: center;
+    margin-bottom: 32px;
+    padding: 24px;
+}
+
+.header__title {
+    color: #fff;
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.header__subtitle {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: clamp(14px, 2vw, 16px);
+}
+
+/* ===== Main Card ===== */
+.main {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+/* ===== Input Section ===== */
+.input-section {
+    margin-bottom: 24px;
+}
+
+.input-section__label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #1a1a1a;
+}
+
+.input-section__row {
+    display: flex;
+    gap: 8px;
+}
+
+@media (max-width: 575px) {
+    .input-section__row {
+        flex-direction: column;
+    }
+}
+
+.input-section__input {
+    flex: 1;
+    padding: 12px 16px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 16px;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    outline: none;
+}
+
+.input-section__input:focus {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.input-section__hint {
+    font-size: 13px;
+    color: #888;
+    margin-top: 8px;
+}
+
+/* ===== Buttons ===== */
+.btn {
+    padding: 12px 24px;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn--primary {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.btn--primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+}
+
+.btn--secondary {
+    background: #f3f4f6;
+    color: #1a1a1a;
+}
+
+.btn--secondary:hover {
+    background: #e5e7eb;
+}
+
+.btn--ghost {
+    background: transparent;
+    color: #6b7280;
+    border: 1px solid #e0e0e0;
+}
+
+.btn--ghost:hover {
+    background: #f9fafb;
+    color: #1a1a1a;
+}
+
+/* ===== Options Section ===== */
+.options-section {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+    padding: 20px;
+    background: #f9fafb;
+    border-radius: 12px;
+    margin-bottom: 24px;
+}
+
+@media (max-width: 575px) {
+    .options-section {
+        grid-template-columns: 1fr;
+    }
+}
+
+.option {
+    display: flex;
+    flex-direction: column;
+}
+
+.option__label {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #4b5563;
+}
+
+.option__range {
+    width: 100%;
+    accent-color: #6366f1;
+}
+
+.option__select,
+.option__color {
+    padding: 8px 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+    outline: none;
+}
+
+.option__select:focus,
+.option__color:focus {
+    border-color: #6366f1;
+}
+
+.option__color {
+    height: 42px;
+    padding: 4px;
+}
+
+/* ===== Output Section ===== */
+.output-section {
+    text-align: center;
+}
+
+.output-section__preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 320px;
+    padding: 24px;
+    background: #f9fafb;
+    border-radius: 12px;
+    margin-bottom: 16px;
+}
+
+.output-section__preview canvas,
+.output-section__preview img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 8px;
+}
+
+.output-section__placeholder {
+    text-align: center;
+    color: #9ca3af;
+}
+
+.output-section__placeholder svg {
+    margin-bottom: 12px;
+}
+
+.output-section__placeholder p {
+    font-size: 14px;
+}
+
+.output-section__actions {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* ===== History Section ===== */
+.history-section {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.history-section__title {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: #1a1a1a;
+}
+
+.history-section__list {
+    list-style: none;
+    margin-bottom: 16px;
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+.history-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: background-color 0.2s ease;
+}
+
+.history-item:hover {
+    background: #f9fafb;
+}
+
+.history-item__url {
+    flex: 1;
+    font-size: 14px;
+    color: #4b5563;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-right: 12px;
+    cursor: pointer;
+}
+
+.history-item__url:hover {
+    color: #6366f1;
+}
+
+.history-item__delete {
+    background: transparent;
+    border: none;
+    color: #ef4444;
+    cursor: pointer;
+    padding: 4px 8px;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.history-item__delete:hover {
+    background: #fee2e2;
+}
+
+/* ===== Toast Notification ===== */
+.toast {
+    position: fixed;
+    bottom: 32px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #1a1a1a;
+    color: #fff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+    opacity: 0;
+    transition: opacity 0.3s ease, transform 0.3s ease;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+.toast--visible {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}

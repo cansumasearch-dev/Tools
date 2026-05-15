@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1 class="header__title">QR Code Generator</h1>
+            <p class="header__subtitle">Erstelle QR-Codes für URLs, die nie ablaufen</p>
+        </header>
+
+        <main class="main">
+            <div class="input-section">
+                <label for="urlInput" class="input-section__label">URL oder Text eingeben</label>
+                <div class="input-section__row">
+                    <input 
+                        type="text" 
+                        id="urlInput" 
+                        class="input-section__input" 
+                        placeholder="https://example.com"
+                        autocomplete="off"
+                    >
+                    <button id="generateBtn" class="btn btn--primary">Generieren</button>
+                </div>
+                <p class="input-section__hint">Tipp: Du kannst auch normalen Text, Telefon-Nummern oder WLAN-Daten eingeben.</p>
+            </div>
+
+            <div class="options-section">
+                <div class="option">
+                    <label for="sizeRange" class="option__label">Größe: <span id="sizeValue">300</span>px</label>
+                    <input type="range" id="sizeRange" min="100" max="800" value="300" step="50" class="option__range">
+                </div>
+
+                <div class="option">
+                    <label for="errorLevel" class="option__label">Fehlertoleranz</label>
+                    <select id="errorLevel" class="option__select">
+                        <option value="L">Niedrig (7%)</option>
+                        <option value="M" selected>Mittel (15%)</option>
+                        <option value="Q">Hoch (25%)</option>
+                        <option value="H">Sehr hoch (30%)</option>
+                    </select>
+                </div>
+
+                <div class="option">
+                    <label for="fgColor" class="option__label">Vordergrundfarbe</label>
+                    <input type="color" id="fgColor" value="#000000" class="option__color">
+                </div>
+
+                <div class="option">
+                    <label for="bgColor" class="option__label">Hintergrundfarbe</label>
+                    <input type="color" id="bgColor" value="#ffffff" class="option__color">
+                </div>
+            </div>
+
+            <div class="output-section">
+                <div class="output-section__preview" id="qrPreview">
+                    <div class="output-section__placeholder">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="5" height="5"></rect>
+                            <rect x="16" y="3" width="5" height="5"></rect>
+                            <rect x="3" y="16" width="5" height="5"></rect>
+                            <path d="M21 16h-3a2 2 0 0 0-2 2v3"></path>
+                            <path d="M21 21v.01"></path>
+                            <path d="M12 7v3a2 2 0 0 1-2 2H7"></path>
+                            <path d="M3 12h.01"></path>
+                            <path d="M12 3h.01"></path>
+                            <path d="M12 16v.01"></path>
+                            <path d="M16 12h1"></path>
+                            <path d="M21 12v.01"></path>
+                            <path d="M12 21v-1"></path>
+                        </svg>
+                        <p>Dein QR-Code erscheint hier</p>
+                    </div>
+                </div>
+
+                <div class="output-section__actions" id="actions" hidden>
+                    <button id="downloadPng" class="btn btn--secondary">PNG herunterladen</button>
+                    <button id="downloadSvg" class="btn btn--secondary">SVG herunterladen</button>
+                    <button id="copyImage" class="btn btn--secondary">In Zwischenablage</button>
+                </div>
+            </div>
+
+            <div class="history-section" id="historySection" hidden>
+                <h2 class="history-section__title">Historie</h2>
+                <ul class="history-section__list" id="historyList"></ul>
+                <button id="clearHistory" class="btn btn--ghost">Historie löschen</button>
+            </div>
+        </main>
+
+        <div class="toast" id="toast"></div>
+    </div>
+
+    <script src="qrcode.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
