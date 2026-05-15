@@ -13,6 +13,10 @@ body {
     padding: 20px;
 }
 
+body::before {
+    background-image: none!important;
+}
+
 /* ===== Container ===== */
 .container {
     max-width: 800px;
