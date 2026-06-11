@@ -223,10 +223,10 @@
   el.url.addEventListener("keydown", function (e) { if (e.key === "Enter") analyze(); });
 
   el.strategy.addEventListener("click", function (e) {
-    var btn = e.target.closest(".segmented__btn");
+    var btn = e.target.closest("[data-strategy]");
     if (!btn) return;
-    Array.prototype.forEach.call(el.strategy.children, function (c) { c.classList.remove("is-active"); });
-    btn.classList.add("is-active");
+    Array.prototype.forEach.call(el.strategy.querySelectorAll("[data-strategy]"), function (c) { c.classList.remove("active"); });
+    btn.classList.add("active");
     strategy = btn.getAttribute("data-strategy");
     if (cache[strategy]) render(cache[strategy], cache[strategy].lighthouseResult.finalUrl);
   });

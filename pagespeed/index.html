@@ -4,102 +4,106 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PageSpeed Insights — toolkit.artline-studio.de</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" />
   <link rel="stylesheet" href="../assets/css/main.css" />
   <link rel="stylesheet" href="pagespeed.css" />
-  <script>
-    (function(){var t=localStorage.getItem('toolkit-theme');if(t){document.documentElement.setAttribute('data-theme',t);document.documentElement.setAttribute('data-bs-theme',t);}}());
-  </script>
+  <script>(function(){var t=localStorage.getItem('toolkit-theme');if(t){document.documentElement.setAttribute('data-bs-theme',t);document.documentElement.setAttribute('data-theme',t);}}());</script>
 </head>
 <body>
 
-  <!-- ── Navbar ──────────────────────────────────────────────────────────── -->
-  <nav class="navbar">
-    <a class="navbar__brand" href="../index.html">
-      <span class="navbar__brand-dot"></span>
-      toolkit.artline-studio.de
-    </a>
-    <span class="navbar__sep"></span>
-    <div class="navbar__links" id="nav-links">
-      <a class="navbar__link" href="../index.html">Home</a>
-      <a class="navbar__link" href="../text-comparisor/index.html">TextMatch</a>
-      <a class="navbar__link" href="../bootstrap-builder/index.html">BS Builder</a>
-      <a class="navbar__link" href="../webp-converter/index.html">WebP Converter</a>
-      <a class="navbar__link" href="../qr-code-generator/index.html">QR Generator</a>
-      <a class="navbar__link is-active" href="index.html">PageSpeed</a>
-    </div>
-    <div class="navbar__right">
-      <button class="navbar__theme" data-action="toggle-theme" title="Toggle theme" aria-label="Toggle dark/light mode">
-        <svg class="icon-sun" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"><circle cx="10" cy="10" r="3.5"/><line x1="10" y1="1.5" x2="10" y2="3.2"/><line x1="10" y1="16.8" x2="10" y2="18.5"/><line x1="1.5" y1="10" x2="3.2" y2="10"/><line x1="16.8" y1="10" x2="18.5" y2="10"/><line x1="4.1" y1="4.1" x2="5.4" y2="5.4"/><line x1="14.6" y1="14.6" x2="15.9" y2="15.9"/><line x1="15.9" y1="4.1" x2="14.6" y2="5.4"/><line x1="5.4" y1="14.6" x2="4.1" y2="15.9"/></svg>
-        <svg class="icon-moon" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M17 13.5A7 7 0 016.5 3a7 7 0 1010.5 10.5z"/></svg>
+  <nav class="navbar navbar-expand-lg tk-navbar sticky-top">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2 fw-semibold" href="../index.html">
+        <span class="tk-brand-dot"></span>toolkit<span class="text-secondary fw-normal d-none d-sm-inline">.artline-studio.de</span>
+      </a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#tkNav" aria-controls="tkNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
       </button>
-      <button class="navbar__burger" data-action="toggle-menu" aria-label="Toggle navigation" aria-expanded="false"><span></span><span></span><span></span></button>
+      <div class="collapse navbar-collapse justify-content-lg-end gap-lg-3" id="tkNav">
+        <ul class="navbar-nav d-flex align-items-lg-center gap-1 mb-3 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="../index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="../text-comparisor/index.html">TextMatch</a></li>
+          <li class="nav-item"><a class="nav-link" href="../bootstrap-builder/index.html">BS Builder</a></li>
+          <li class="nav-item"><a class="nav-link" href="../webp-converter/index.html">WebP Converter</a></li>
+          <li class="nav-item"><a class="nav-link" href="../qr-code-generator/index.html">QR Generator</a></li>
+          <li class="nav-item"><a class="nav-link active" aria-current="page" href="index.html">PageSpeed</a></li>
+        </ul>
+        <button class="btn btn-sm tk-theme-btn mb-2 mb-lg-0" data-action="toggle-theme" title="Toggle theme" aria-label="Toggle dark / light mode">
+          <i class="bi bi-sun-fill"></i><i class="bi bi-moon-stars-fill"></i>
+        </button>
+      </div>
     </div>
   </nav>
 
-  <main class="ps-wrap">
+  <main class="container">
 
-    <header class="ps-head">
-      <p class="ps-head__eyebrow">performance · lighthouse</p>
-      <h1 class="ps-head__title">PageSpeed<br /><em>Insights.</em></h1>
-      <p class="ps-head__sub">Drop in any URL. Get a full Lighthouse audit — performance, accessibility, best practices and SEO — for mobile and desktop side by side.</p>
+    <header class="tk-hero pb-4">
+      <div class="d-flex flex-column align-items-center text-center gap-3">
+        <span class="tk-eyebrow">performance · lighthouse</span>
+        <h1 class="tk-display mb-0">PageSpeed Insights.</h1>
+        <p class="tk-lead mb-0">Drop in any URL and get a full Lighthouse audit — performance, accessibility, best practices and SEO — for mobile and desktop, side by side.</p>
+      </div>
     </header>
 
-    <!-- Controls -->
-    <section class="ps-controls">
-      <div class="ps-inputrow">
-        <input type="url" class="field" id="psUrl" placeholder="https://example.com" autocomplete="url" spellcheck="false" />
-        <button class="btn btn--primary" id="psAnalyze">
-          <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><circle cx="7" cy="7" r="5"/><path d="m11 11 3 3"/></svg>
-          Analyze
-        </button>
-      </div>
-      <div class="ps-meta">
-        <div class="segmented" id="psStrategy">
-          <button class="segmented__btn is-active" data-strategy="mobile">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4.5" y="1.5" width="7" height="13" rx="1.5"/><line x1="7" y1="12.2" x2="9" y2="12.2"/></svg>
-            Mobile
-          </button>
-          <button class="segmented__btn" data-strategy="desktop">
-            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="1.5" y="2.5" width="13" height="8.5" rx="1.5"/><line x1="5.5" y1="14" x2="10.5" y2="14"/></svg>
-            Desktop
+    <div class="row justify-content-center">
+      <div class="col-lg-9 col-xl-8">
+
+        <!-- Controls -->
+        <div class="input-group input-group-lg tk-ps-input">
+          <span class="input-group-text"><i class="bi bi-link-45deg"></i></span>
+          <input type="url" class="form-control" id="psUrl" placeholder="https://example.com" autocomplete="url" spellcheck="false" />
+          <button class="btn btn-primary px-4 d-inline-flex align-items-center" id="psAnalyze">
+            <i class="bi bi-search me-2"></i>Analyze
           </button>
         </div>
-        <span class="ps-hint">Powered by Google Lighthouse · both views run at once</span>
-      </div>
-    </section>
 
-    <!-- Loading -->
-    <section class="ps-state ps-loading-wrap" id="psLoading">
-      <div class="ps-loading">
-        <div class="ps-spinner"></div>
-        <div>
-          <div class="ps-loading__txt">Auditing your page…</div>
-          <div class="ps-loading__sub">Lighthouse usually takes 15–30 seconds</div>
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-3 mt-3">
+          <div class="btn-group" id="psStrategy" role="group" aria-label="Strategy">
+            <button type="button" class="btn btn-outline-secondary active" data-strategy="mobile"><i class="bi bi-phone me-1"></i>Mobile</button>
+            <button type="button" class="btn btn-outline-secondary" data-strategy="desktop"><i class="bi bi-display me-1"></i>Desktop</button>
+          </div>
+          <span class="text-secondary small">Powered by Google Lighthouse · both views run at once</span>
         </div>
-        <div class="ps-loading__legs">
-          <span class="ps-loading__leg">Mobile <b id="psLegMobile">running</b></span>
-          <span class="ps-loading__leg">Desktop <b id="psLegDesktop">running</b></span>
-        </div>
-      </div>
-    </section>
 
-    <!-- Error -->
-    <section class="ps-state" id="psErrorWrap">
-      <div class="ps-error">
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16.5" x2="12" y2="16.5"/></svg>
-        <div>
-          <div class="ps-error__title" id="psErrorTitle">Couldn't analyze that URL</div>
-          <div class="ps-error__msg" id="psErrorMsg"></div>
-        </div>
-      </div>
-    </section>
+        <!-- Loading -->
+        <section class="ps-state mt-4" id="psLoading">
+          <div class="d-flex flex-column flex-sm-row align-items-sm-center gap-3 p-4 ps-card">
+            <div class="ps-spinner"></div>
+            <div class="flex-grow-1">
+              <div class="fw-semibold">Auditing your page…</div>
+              <div class="text-secondary small">Lighthouse usually takes 15–30 seconds</div>
+            </div>
+            <div class="d-flex gap-2">
+              <span class="badge tk-leg">Mobile <b id="psLegMobile">running</b></span>
+              <span class="badge tk-leg">Desktop <b id="psLegDesktop">running</b></span>
+            </div>
+          </div>
+        </section>
 
-    <!-- Results -->
-    <section class="ps-state" id="psResults"></section>
+        <!-- Error -->
+        <section class="ps-state mt-4" id="psErrorWrap">
+          <div class="d-flex align-items-start gap-3 p-4 ps-card ps-card--error">
+            <i class="bi bi-exclamation-circle fs-4 lh-1"></i>
+            <div>
+              <div class="fw-semibold" id="psErrorTitle">Couldn't analyze that URL</div>
+              <div class="text-secondary small mt-1" id="psErrorMsg"></div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </div>
+
+    <!-- Results (rendered by pagespeed.js) -->
+    <section class="ps-state mt-4" id="psResults"></section>
 
   </main>
 
+  <div style="height:4rem"></div>
+
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
   <script src="../assets/js/navbar.js"></script>
   <script src="pagespeed.js"></script>
 </body>
