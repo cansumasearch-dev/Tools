@@ -11,29 +11,7 @@
 </head>
 <body>
 
-  <nav class="navbar navbar-expand-lg tk-navbar sticky-top">
-    <div class="container">
-      <a class="navbar-brand d-flex align-items-center gap-2 fw-semibold" href="index.html">
-        <span class="tk-brand-dot"></span>toolkit<span class="text-secondary fw-normal d-none d-sm-inline">.artline-studio.de</span>
-      </a>
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#tkNav" aria-controls="tkNav" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-      </button>
-      <div class="collapse navbar-collapse justify-content-lg-end gap-lg-3" id="tkNav">
-        <ul class="navbar-nav d-flex align-items-lg-center gap-1 mb-3 mb-lg-0">
-          <li class="nav-item"><a class="nav-link active" aria-current="page" href="index.html">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="text-comparisor/index.html">TextMatch</a></li>
-          <li class="nav-item"><a class="nav-link" href="bootstrap-builder/index.html">BS Builder</a></li>
-          <li class="nav-item"><a class="nav-link" href="webp-converter/index.html">WebP Converter</a></li>
-          <li class="nav-item"><a class="nav-link" href="qr-code-generator/index.html">QR Generator</a></li>
-          <li class="nav-item"><a class="nav-link" href="pagespeed/index.html">PageSpeed</a></li>
-        </ul>
-        <button class="btn btn-sm tk-theme-btn mb-2 mb-lg-0" data-action="toggle-theme" title="Toggle theme" aria-label="Toggle dark / light mode">
-          <i class="bi bi-sun-fill"></i><i class="bi bi-moon-stars-fill"></i>
-        </button>
-      </div>
-    </div>
-  </nav>
+  <div id="tk-nav"></div>
 
   <header class="tk-hero">
     <div class="container">
@@ -135,17 +113,10 @@
     </div>
   </section>
 
-  <footer class="tk-footer mt-5">
-    <div class="container py-4 d-flex flex-wrap align-items-center gap-2 gap-md-3">
-      <span class="fw-semibold text-body">toolkit.artline-studio.de</span>
-      <span class="d-none d-md-inline">·</span>
-      <span>5 tools · all browser-based · no data sent</span>
-    </div>
-  </footer>
 
+  <div id="tk-footer"></div>
   <script src="https://code.jquery.com/jquery-3.7.1.min.js" crossorigin="anonymous"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/js/navbar.js"></script>
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/components.js"></script>
 </body>
 </html>

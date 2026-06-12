@@ -1,11 +1,12 @@
-@import url('shell.css');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
 
 /* ============================================================================
-   main.css — full design system for the pages we own end-to-end
-   (home + pagespeed). Loaded ON TOP of shell.css. Tool pages do NOT load this,
-   so their button/heading styling is never touched.
+   toolkit.artline-studio.de — GLOBAL design system (single source of truth)
+   Loaded by every page. Bootstrap 5.3 + bootstrap-icons on top.
+   Layout is done with d-flex + gap + justify-content in markup (no margin-auto).
    ========================================================================== */
 
+/* ── Tokens ─────────────────────────────────────────────────────────────── */
 :root {
   --bs-body-font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
   --bs-body-color: #1d1d1f;
@@ -22,7 +23,18 @@
   --bs-link-color: #0071e3;
   --bs-link-color-rgb: 0, 113, 227;
   --bs-link-hover-color: #0077ed;
+
+  --tk-surface: #f5f5f7;
+  --tk-card: #ffffff;
+  --tk-muted: #6e6e73;
+  --tk-border: #e6e6eb;
+  --tk-accent: #0071e3;
+  --tk-accent-rgb: 0, 113, 227;
+  --tk-nav-bg: rgba(255, 255, 255, .72);
   --tk-shadow: 0 18px 40px -18px rgba(0, 0, 0, .22);
+
+  --good: #1c8c3e; --avg: #b25e00; --bad: #c8202c;
+  --good-bg: rgba(28,140,62,.1); --avg-bg: rgba(178,94,0,.1); --bad-bg: rgba(200,32,44,.1);
 }
 [data-bs-theme="dark"] {
   --bs-body-color: #f5f5f7;
@@ -36,14 +48,26 @@
   --bs-link-color: #2997ff;
   --bs-link-color-rgb: 41, 151, 255;
   --bs-link-hover-color: #5aacff;
+
+  --tk-surface: #1d1d1f;
+  --tk-card: #161617;
+  --tk-muted: #86868b;
+  --tk-border: #2a2a2c;
+  --tk-accent: #2997ff;
+  --tk-accent-rgb: 41, 151, 255;
+  --tk-nav-bg: rgba(0, 0, 0, .72);
   --tk-shadow: 0 18px 50px -18px rgba(0, 0, 0, .75);
+
+  --good: #30d158; --avg: #ff9f0a; --bad: #ff453a;
+  --good-bg: rgba(48,209,88,.14); --avg-bg: rgba(255,159,10,.14); --bad-bg: rgba(255,69,58,.14);
 }
 
 body { -webkit-font-smoothing: antialiased; letter-spacing: -.01em; }
 ::selection { background: rgba(var(--bs-primary-rgb), .92); color: #fff; }
 h1, h2, h3, .display-1, .display-2, .display-3, .display-4 { letter-spacing: -.03em; font-weight: 700; }
+.tk-bg-surface { background: var(--tk-surface); }
 
-/* ---- Buttons (recoloured via Bootstrap 5.3 component variables) ----------- */
+/* ── Buttons (Bootstrap 5.3 component variables) ────────────────────────── */
 .btn { --bs-btn-font-weight: 600; --bs-btn-border-radius: 50rem; --bs-btn-padding-x: 1.35rem; --bs-btn-padding-y: .6rem; letter-spacing: -.01em; }
 .btn-lg { --bs-btn-padding-x: 1.8rem; --bs-btn-padding-y: .85rem; --bs-btn-font-size: 1.05rem; }
 .btn-primary {
@@ -69,19 +93,51 @@ h1, h2, h3, .display-1, .display-2, .display-3, .display-4 { letter-spacing: -.0
   --bs-btn-active-bg: var(--tk-surface); --bs-btn-active-color: var(--bs-body-color);
 }
 
-/* ---- Hero ----------------------------------------------------------------- */
+/* ── Navbar (reusable, injected by components.js) ───────────────────────── */
+.tk-navbar {
+  --bs-navbar-padding-y: .55rem;
+  background: var(--tk-nav-bg);
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  border-bottom: 1px solid transparent;
+  transition: border-color .3s ease, background .3s ease;
+}
+.tk-navbar.is-scrolled { border-bottom-color: var(--tk-border); }
+.tk-navbar .navbar-brand { font-size: 1rem; font-weight: 600; letter-spacing: -.02em; }
+.tk-brand-dot { width: 9px; height: 9px; border-radius: 50%; background: var(--tk-accent); box-shadow: 0 0 0 4px rgba(var(--tk-accent-rgb), .15); }
+.tk-navbar .nav-link { font-size: .92rem; font-weight: 500; padding: .4rem .85rem; border-radius: 50rem; color: var(--tk-muted); transition: color .15s, background .15s; }
+.tk-navbar .nav-link:hover, .tk-navbar .nav-link:focus { color: var(--bs-body-color); }
+.tk-navbar .nav-link.active { color: var(--bs-body-color); background: var(--tk-surface); font-weight: 600; }
+.tk-theme-btn {
+  --bs-btn-padding-x: .55rem; --bs-btn-padding-y: .4rem;
+  border: 1px solid var(--tk-border); color: var(--bs-body-color);
+  display: inline-flex; align-items: center; justify-content: center; font-size: 1rem;
+}
+.tk-theme-btn:hover { background: var(--tk-surface); color: var(--bs-body-color); }
+.tk-theme-btn .bi-moon-stars-fill { display: none; }
+[data-bs-theme="dark"] .tk-theme-btn .bi-sun-fill { display: none; }
+[data-bs-theme="dark"] .tk-theme-btn .bi-moon-stars-fill { display: inline-block; }
+.tk-navbar .navbar-toggler { box-shadow: none !important; border-color: var(--tk-border); }
+
+/* ── Footer (reusable, injected by components.js) ───────────────────────── */
+.tk-footer { border-top: 1px solid var(--tk-border); color: var(--tk-muted); font-size: .9rem; }
+.tk-footer a { color: var(--tk-muted); text-decoration: none; }
+.tk-footer a:hover { color: var(--bs-body-color); }
+
+/* ── Hero ───────────────────────────────────────────────────────────────── */
 .tk-hero { padding: clamp(3.5rem, 9vw, 7rem) 0 clamp(2.5rem, 5vw, 4rem); }
 .tk-eyebrow { color: var(--bs-primary); font-weight: 600; font-size: .82rem; letter-spacing: .06em; text-transform: uppercase; }
 .tk-display { font-weight: 800; letter-spacing: -.045em; line-height: 1.03; font-size: clamp(2.6rem, 7vw, 5rem); }
 .tk-lead { color: var(--bs-secondary-color); font-size: clamp(1.05rem, 2.2vw, 1.3rem); max-width: 48ch; }
 
-/* ---- Tool cards ----------------------------------------------------------- */
+/* ── Cards (shared) ─────────────────────────────────────────────────────── */
 .tk-card {
   background: var(--tk-card); border: 1px solid var(--tk-border);
   border-radius: var(--bs-border-radius-xl); text-decoration: none; color: inherit;
-  transition: transform .28s cubic-bezier(.2, .7, .3, 1), box-shadow .28s, border-color .28s;
+  transition: transform .28s cubic-bezier(.2,.7,.3,1), box-shadow .28s, border-color .28s;
 }
 .tk-card:hover, .tk-card:focus-visible { transform: translateY(-6px); box-shadow: var(--tk-shadow); border-color: rgba(var(--bs-primary-rgb), .55); }
+.tk-card--static:hover { transform: none; box-shadow: none; border-color: var(--tk-border); }
 .tk-card__icon { width: 54px; height: 54px; border-radius: 16px; background: rgba(var(--bs-primary-rgb), .1); color: var(--bs-primary); font-size: 1.5rem; }
 .tk-card__num { font-variant-numeric: tabular-nums; color: var(--tk-muted); font-weight: 600; font-size: .85rem; }
 .tk-card__tag { text-transform: uppercase; letter-spacing: .05em; font-size: .72rem; font-weight: 600; color: var(--tk-muted); }
@@ -89,17 +145,77 @@ h1, h2, h3, .display-1, .display-2, .display-3, .display-4 { letter-spacing: -.0
 .tk-card__go i { transition: transform .2s ease; }
 .tk-card:hover .tk-card__go i { transform: translateX(4px); }
 
-/* ---- Section label + footer ----------------------------------------------- */
+/* ── Panels (shared surface w/ header + body) ───────────────────────────── */
+.tk-panel { background: var(--tk-card); border: 1px solid var(--tk-border); border-radius: var(--bs-border-radius-xl); overflow: hidden; }
+.tk-panel__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.35rem; border-bottom: 1px solid var(--tk-border); }
+.tk-panel__title { font-weight: 700; font-size: 1.05rem; letter-spacing: -.02em; }
+.tk-panel__hint { color: var(--tk-muted); font-size: .82rem; }
+.tk-panel__body { padding: 1.35rem; }
+
+/* ── Section label + rule ───────────────────────────────────────────────── */
 .tk-section-label { font-size: .8rem; font-weight: 600; text-transform: uppercase; letter-spacing: .08em; color: var(--tk-muted); }
 .tk-rule { height: 1px; background: var(--tk-border); }
-.tk-footer { border-top: 1px solid var(--tk-border); color: var(--tk-muted); font-size: .9rem; }
 
-/* ---- PageSpeed input group ------------------------------------------------ */
-.tk-ps-input .form-control { border-color: var(--tk-border); }
-.tk-ps-input .form-control:focus { box-shadow: 0 0 0 .25rem rgba(var(--bs-primary-rgb), .15); border-color: var(--bs-primary); }
-.tk-ps-input .input-group-text { background: var(--tk-surface); border-color: var(--tk-border); color: var(--tk-muted); }
+/* ── Form controls (shared) ─────────────────────────────────────────────── */
+.tk-field .form-control, .form-control.tk-field { border-color: var(--tk-border); }
+.tk-field .form-control:focus, .form-control.tk-field:focus { box-shadow: 0 0 0 .25rem rgba(var(--bs-primary-rgb), .15); border-color: var(--bs-primary); }
+.tk-field .input-group-text { background: var(--tk-surface); border-color: var(--tk-border); color: var(--tk-muted); }
 
-/* ---- Scroll reveal -------------------------------------------------------- */
-.tk-reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s cubic-bezier(.2, .7, .3, 1); }
+/* ── Scroll reveal ──────────────────────────────────────────────────────── */
+.tk-reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.7,.3,1); }
 .tk-reveal.is-in { opacity: 1; transform: none; }
-@media (prefers-reduced-motion: reduce) { .tk-reveal { opacity: 1; transform: none; transition: none; } .tk-card { transition: none; } }
+
+/* ── PageSpeed analyzer components (output of pagespeed.js) ─────────────── */
+.ps-state { display: none; }
+.ps-state.is-on { display: block; }
+.ps-card { background: var(--tk-card); border: 1px solid var(--tk-border); border-radius: var(--bs-border-radius-xl); }
+.ps-card--error { border-color: rgba(200,32,44,.4); color: var(--bad); }
+.ps-card--error .text-secondary { color: var(--bs-secondary-color) !important; }
+.tk-leg { background: var(--tk-surface); color: var(--bs-secondary-color); border-radius: 50rem; font-weight: 500; padding: .45rem .7rem; }
+.tk-leg b { color: var(--bs-body-color); margin-left: .25rem; }
+.ps-spinner { width: 30px; height: 30px; border-radius: 50%; border: 3px solid var(--tk-border); border-top-color: var(--bs-primary); animation: ps-spin .8s linear infinite; flex: none; }
+@keyframes ps-spin { to { transform: rotate(360deg); } }
+.ps-result-bar { display: flex; flex-wrap: wrap; align-items: baseline; gap: .25rem 1rem; margin-bottom: 1.5rem; }
+.ps-result-bar__url { font-weight: 600; font-size: 1.05rem; word-break: break-all; }
+.ps-result-bar__meta { color: var(--tk-muted); font-size: .85rem; text-transform: capitalize; }
+.ps-scores { display: flex; flex-wrap: wrap; justify-content: center; gap: clamp(1.5rem, 5vw, 3.5rem); padding: 1rem 0 2rem; }
+.ps-score { display: flex; flex-direction: column; align-items: center; gap: .75rem; }
+.ps-ring { position: relative; width: 104px; height: 104px; }
+.ps-ring svg { width: 104px; height: 104px; transform: rotate(-90deg); }
+.ps-ring__track { fill: none; stroke: var(--tk-surface); stroke-width: 8; }
+.ps-ring__bar { fill: none; stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s cubic-bezier(.2,.7,.3,1); }
+.stroke-good { stroke: var(--good); } .stroke-avg { stroke: var(--avg); } .stroke-bad { stroke: var(--bad); }
+.ps-ring__num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.ps-ring__num.is-good { color: var(--good); } .ps-ring__num.is-avg { color: var(--avg); } .ps-ring__num.is-bad { color: var(--bad); }
+.ps-score__label { font-weight: 600; font-size: .9rem; color: var(--bs-secondary-color); }
+.ps-panel { background: var(--tk-card); border: 1px solid var(--tk-border); border-radius: var(--bs-border-radius-xl); margin-top: 1.5rem; overflow: hidden; }
+.ps-panel__head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding: 1.1rem 1.35rem; border-bottom: 1px solid var(--tk-border); }
+.ps-panel__title { font-weight: 700; font-size: 1.05rem; letter-spacing: -.02em; }
+.ps-panel__hint { color: var(--tk-muted); font-size: .82rem; text-transform: capitalize; }
+.ps-panel__body { padding: 1.35rem; }
+.ps-vitals { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 1rem; }
+.ps-vital { background: var(--tk-surface); border-radius: var(--bs-border-radius-lg); padding: 1rem 1.1rem; display: flex; flex-direction: column; gap: .35rem; }
+.ps-vital__top { display: flex; align-items: center; justify-content: space-between; }
+.ps-vital__lbl { font-weight: 700; font-size: .8rem; letter-spacing: .05em; color: var(--tk-muted); }
+.ps-vital__dot { width: 9px; height: 9px; border-radius: 50%; }
+.ps-vital__val { font-size: 1.3rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.ps-vital__val.is-good { color: var(--good); } .ps-vital__val.is-avg { color: var(--avg); } .ps-vital__val.is-bad { color: var(--bad); }
+.ps-vital__name { font-size: .8rem; color: var(--bs-secondary-color); }
+.ps-opp { display: flex; align-items: center; gap: 1rem; padding: .9rem 0; border-bottom: 1px solid var(--tk-border); }
+.ps-opp:last-child { border-bottom: 0; padding-bottom: 0; }
+.ps-opp:first-child { padding-top: 0; }
+.ps-opp__icon { flex: none; width: 38px; height: 38px; border-radius: 11px; display: flex; align-items: center; justify-content: center; }
+.ps-opp__icon svg { width: 19px; height: 19px; }
+.ps-opp__body { flex-grow: 1; min-width: 0; }
+.ps-opp__title { font-weight: 600; font-size: .95rem; }
+.ps-opp__desc { font-size: .82rem; color: var(--bs-secondary-color); margin-top: .15rem; }
+.ps-opp__save { flex: none; font-weight: 700; font-variant-numeric: tabular-nums; font-size: .95rem; }
+.ps-opp__save.is-avg { color: var(--avg); } .ps-opp__save.is-bad { color: var(--bad); }
+.ps-empty { display: flex; align-items: center; gap: .6rem; color: var(--good); font-weight: 500; }
+.ps-empty svg { width: 22px; height: 22px; flex: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tk-reveal { opacity: 1; transform: none; transition: none; }
+  .tk-card { transition: none; }
+  .ps-ring__bar { transition: none; }
+}
