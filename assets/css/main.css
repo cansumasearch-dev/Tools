@@ -219,3 +219,51 @@ h1, h2, h3, .display-1, .display-2, .display-3, .display-4 { letter-spacing: -.0
   .tk-card { transition: none; }
   .ps-ring__bar { transition: none; }
 }
+
+/* ============================================================================
+   Chrome hardening — force the injected navbar + footer to render IDENTICALLY
+   on every page, overriding any per-tool CSS that styles .navbar/.container/body
+   (old fixed navbars, body top-padding, 800px containers, cyan accents, etc.).
+   Scoped strictly to the shared chrome so tool bodies are untouched.
+   ========================================================================== */
+.tk-navbar {
+  position: sticky !important;
+  top: 0 !important;
+  left: auto !important; right: auto !important; bottom: auto !important;
+  height: auto !important; min-height: 0 !important; max-height: none !important;
+  width: 100% !important;
+  margin: 0 !important;
+  padding: .55rem 0 !important;
+  background: var(--tk-nav-bg) !important;
+  border-bottom: 1px solid transparent !important;
+  z-index: 1030 !important;
+  backdrop-filter: saturate(180%) blur(20px);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+}
+.tk-navbar.is-scrolled { border-bottom-color: var(--tk-border) !important; }
+.tk-navbar > .container {
+  max-width: 1140px !important; width: 100% !important; height: auto !important;
+  padding-left: var(--bs-gutter-x, 1.5rem) !important;
+  padding-right: var(--bs-gutter-x, 1.5rem) !important;
+}
+.tk-navbar .navbar-brand {
+  font-family: var(--bs-body-font-family) !important;
+  font-size: 1rem !important; font-weight: 600 !important;
+  color: var(--bs-body-color) !important;
+}
+.tk-navbar .navbar-nav .nav-link {
+  font-family: var(--bs-body-font-family) !important;
+  font-size: .92rem !important; font-weight: 500 !important;
+  color: var(--tk-muted) !important;
+  padding: .4rem .85rem !important;
+  border-radius: 50rem !important;
+}
+.tk-navbar .navbar-nav .nav-link:hover,
+.tk-navbar .navbar-nav .nav-link:focus { color: var(--bs-body-color) !important; background: transparent !important; }
+.tk-navbar .navbar-nav .nav-link.active { color: var(--bs-body-color) !important; background: var(--tk-surface) !important; font-weight: 600 !important; }
+
+.tk-footer { border-top: 1px solid var(--tk-border) !important; }
+.tk-footer > .container { max-width: 1140px !important; width: 100% !important; }
+
+/* kill the top offset left over from the old fixed navbars (removes the gap) */
+body { padding-top: 0 !important; }
