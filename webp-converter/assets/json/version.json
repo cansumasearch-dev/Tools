@@ -1,8 +1,8 @@
 {
-  "version": "1.0.20",
-  "timestamp": 1781189625414,
-  "hash": "1619467",
+  "version": "1.0.17",
+  "timestamp": 1778840557151,
+  "hash": "6eb45cd",
   "branch": "main",
-  "buildDate": "2026-06-11T14:53:45.000Z",
+  "buildDate": "2026-05-15T10:22:37.000Z",
   "deployedBy": "sumasearch"
 }
