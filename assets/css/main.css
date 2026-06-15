@@ -267,3 +267,38 @@ h1, h2, h3, .display-1, .display-2, .display-3, .display-4 { letter-spacing: -.0
 
 /* kill the top offset left over from the old fixed navbars (removes the gap) */
 body { padding-top: 0 !important; }
+
+/* ============================================================================
+   ONE consistent style across every page — fonts, accent colour, container,
+   background. Global stylesheet loads last, so these win over per-tool CSS.
+   ========================================================================== */
+
+/* one font family everywhere (icons + code excepted) */
+body, body * { font-family: var(--bs-body-font-family) !important; }
+code, kbd, samp, pre, .code-pane, .code-pane *, .hljs, .hljs * {
+  font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace !important;
+}
+
+/* one accent colour — override the tools' cyan / custom accent variables */
+:root {
+  --accent: #0071e3 !important; --accent-rgb: 0, 113, 227 !important;
+  --accent-dim: rgba(0, 113, 227, .1) !important; --glow: 0 0 16px rgba(0, 113, 227, .3) !important;
+}
+[data-bs-theme="dark"] {
+  --accent: #2997ff !important; --accent-rgb: 41, 151, 255 !important;
+  --accent-dim: rgba(41, 151, 255, .12) !important; --glow: 0 0 16px rgba(41, 151, 255, .3) !important;
+}
+
+/* one background + text colour (kills the navy / off-black tool bodies) */
+body { background: var(--bs-body-bg) !important; color: var(--bs-body-color) !important; }
+
+/* one container width everywhere (kills the 800px / xl variants) */
+.container, .container-sm, .container-md, .container-lg, .container-xl, .container-xxl {
+  max-width: 1140px !important;
+}
+
+/* theme toggle: a proper circle, not a stretched pill */
+.tk-theme-btn {
+  width: 40px !important; height: 40px !important; padding: 0 !important;
+  border-radius: 50% !important; flex: 0 0 auto !important; line-height: 1 !important;
+}
